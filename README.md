@@ -1,5 +1,5 @@
 
-# Logistic Regression
+# Logging-unit-Testing-Logistic-Regression
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/ml-logistic-regression/HEAD)
 
