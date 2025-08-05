@@ -1,63 +1,50 @@
 import unittest
-import pandas as pd
-import logistic_model as lm
-import logging
-import io
-from contextlib import redirect_stdout
+import re
+from logistic_model import load_data, train_model, evaluate_model
 
 class TestLogisticModel(unittest.TestCase):
 
     def setUp(self):
-        self.df = lm.load_data("advertising.csv")
+        self.df = load_data("advertising.csv")
+        self.model, self.X_test, self.y_test = train_model(self.df)
 
     def test_predict_function(self):
-        """Test für predict(): Accuracy + Confusion Matrix + Logging"""
+        # Prüfen, ob evaluate_model korrekte Logs produziert und Accuracy >= 0.9 ist
         with self.assertLogs(level='INFO') as log_cm:
-            model, X_test, y_test = lm.train_model(self.df)
-            acc, cm = lm.evaluate_model(model, X_test, y_test)
+            accuracy = evaluate_model(self.model, self.X_test, self.y_test)
 
-        # Prüfen ob Accuracy im Log ist
-        log_messages = "\n".join(log_cm.output)
-        self.assertIn("Accuracy:", log_messages)
-        self.assertIn("Confusion Matrix", log_messages)
-        self.assertGreaterEqual(acc, 0)  # Accuracy >= 0
-        self.assertLessEqual(acc, 1)     # Accuracy <= 1
+        # Logs mit Accuracy finden
+        accuracy_logs = [msg for msg in log_cm.output if "Accuracy" in msg]
+        self.assertTrue(len(accuracy_logs) > 0, "Keine Accuracy Logs gefunden")
+
+        # Logs mit Confusion Matrix finden
+        cm_logs = [msg for msg in log_cm.output if "Confusion Matrix" in msg]
+        self.assertTrue(len(cm_logs) > 0, "Keine Confusion Matrix Logs gefunden")
+
+        # Accuracy ist groß genug
+        self.assertGreaterEqual(accuracy, 0.9)
 
     def test_fit_runtime(self):
-        """Test für fit() Laufzeit, max 120% eines Referenzwertes"""
-        # Referenzlaufzeit messen
-        f = io.StringIO()
-        with redirect_stdout(f):
-            model, X_test, y_test = lm.train_model(self.df)
-        logs = f.getvalue()
+        # Prüfe, ob train_model Timer-Log mit Laufzeit vorhanden ist und Laufzeit OK
+        with self.assertLogs(level='INFO') as log_cm:
+            train_model(self.df)
 
-        # Referenzzeit aus Log extrahieren
-        ref_time = None
-        for line in logs.splitlines():
-            if "executed in" in line:
-                try:
-                    ref_time = float(line.split("executed in")[1].split("sec")[0])
-                except:
-                    pass
+        timer_logs = [msg for msg in log_cm.output if re.search(r'train_model executed in \d+\.\d+ sec', msg)]
+        self.assertTrue(timer_logs, "Timer Log fehlt")
 
-        self.assertIsNotNone(ref_time, "Timer Log fehlt")
+        match = re.search(r'train_model executed in (\d+\.\d+) sec', timer_logs[0])
+        self.assertIsNotNone(match, "Laufzeit konnte nicht extrahiert werden")
+        runtime = float(match.group(1))
 
-        # Testlauf: prüfen, ob Zeit <= 120% der Referenz
-        f = io.StringIO()
-        with redirect_stdout(f):
-            model, X_test, y_test = lm.train_model(self.df)
-        logs_test = f.getvalue()
+        ref_time = 0.5  # Referenzzeit an dein System anpassen
 
-        test_time = None
-        for line in logs_test.splitlines():
-            if "executed in" in line:
-                try:
-                    test_time = float(line.split("executed in")[1].split("sec")[0])
-                except:
-                    pass
-
-        self.assertIsNotNone(test_time, "Timer Log fehlt im Testlauf")
-        self.assertLessEqual(test_time, ref_time * 1.2, "Trainingszeit überschreitet Grenzwert")
+        self.assertLessEqual(runtime, ref_time * 1.2, f"Laufzeit {runtime}s überschreitet 120% von {ref_time}s")
 
 if __name__ == "__main__":
-    unittest.main(argv=[''], exit=False)
+     unittest.main(argv=[''], exit=False)
+
+
+
+
+
+  
