@@ -57,4 +57,4 @@ class TestLogisticModel(unittest.TestCase):
 
 if __name__ == "__main__":
     print("\n=== Starte Unit-Tests ===\n")
-    unittest.main()
+    unittest.main(argv=[''], exit=False)
