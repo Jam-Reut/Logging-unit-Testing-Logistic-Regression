@@ -10,12 +10,6 @@ Das Notebook führt automatisch das Training mit Logging durch und führt anschl
 ## Auto Start (Modell & Testing)
 
 
-## Separat staten ( Modell | Testing)
-[![Modell starten](https://img.shields.io/badge/Run-Logistic%20Model-blue?logo=python)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=logistic_model.py)
-
-[![Unit Tests starten](https://img.shields.io/badge/Run-Unit%20Tests-green?logo=pytest)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=test_logistic_model.py)
-
-
 # Projektbeschreibung
 
 Dieses Projekt zeigt ein Beispiel für maschinelles Lernen mit ausführlichem Logging und automatischen Unit-Tests.
