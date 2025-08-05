@@ -23,4 +23,9 @@ python -m unittest test_logistic_model.py
 - Ausgabe des `classification_report`
 - Log-Datei `logistic_model.log` mit den Prozessschritten
 
+[![Modell starten](https://img.shields.io/badge/Run-Logistic%20Model-blue?logo=python)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=logistic_model.py)
+
+[![Unit Tests starten](https://img.shields.io/badge/Run-Unit%20Tests-green?logo=pytest)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=test_logistic_model.py)
+
+
 
