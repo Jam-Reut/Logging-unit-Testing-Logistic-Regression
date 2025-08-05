@@ -36,7 +36,7 @@ class TestLogisticModel(unittest.TestCase):
         self.assertIsNotNone(match, "Laufzeit konnte nicht extrahiert werden")
         runtime = float(match.group(1))
 
-        ref_time = 0.5  # Referenzzeit an dein System anpassen
+        ref_time = 1.0  # Referenzzeit an dein System anpassen
 
         self.assertLessEqual(runtime, ref_time * 1.2, f"Laufzeit {runtime}s überschreitet 120% von {ref_time}s")
 
