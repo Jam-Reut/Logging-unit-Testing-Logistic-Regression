@@ -60,4 +60,4 @@ class TestLogisticModel(unittest.TestCase):
         self.assertLessEqual(test_time, ref_time * 1.2, "Trainingszeit überschreitet Grenzwert")
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(argv=[''], exit=False)
