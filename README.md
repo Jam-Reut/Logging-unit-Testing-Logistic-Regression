@@ -22,3 +22,5 @@ python -m unittest test_logistic_model.py
 - Ein trainiertes Modell
 - Ausgabe des `classification_report`
 - Log-Datei `logistic_model.log` mit den Prozessschritten
+
+
