@@ -1,35 +1,54 @@
 
-# Logging-unit-Testing-Logistic-Regression
+# Logistic Regression mit Logging und Unit-Tests
 
-[![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/HEAD?labpath=logistic-regression.ipynb)
+## Auto Start (Modell & Testing)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=auto_start.ipynb)
 
-## Beschreibung
-
-Dieses Projekt verwendet logistische Regression, um vorherzusagen, ob ein Benutzer auf eine Online-Werbeanzeige klickt. Es enthält Logging zur Nachvollziehbarkeit sowie zwei Unit-Tests zur Sicherstellung der Funktionalität.
-
-## Ausführung
-
-1. Stelle sicher, dass `advertising.csv` im gleichen Verzeichnis liegt.
-2. Führe `logistic_model.py` aus, um das Modell zu trainieren und zu evaluieren.
-3. Starte die Unit-Tests mit:
-
-```
-python -m unittest test_logistic_model.py
-```
-
-## Erwartetes Ergebnis
-
-- Ein trainiertes Modell
-- Ausgabe des `classification_report`
-- Log-Datei `logistic_model.log` mit den Prozessschritten
-
+## Separat staten ( Modell | Testing)
 [![Modell starten](https://img.shields.io/badge/Run-Logistic%20Model-blue?logo=python)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=logistic_model.py)
 
 [![Unit Tests starten](https://img.shields.io/badge/Run-Unit%20Tests-green?logo=pytest)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=test_logistic_model.py)
 
 
-## Binder-Button
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=auto_start.ipynb)
+
+# Projektbeschreibung
+
+Dieses Projekt zeigt ein Beispiel für maschinelles Lernen mit ausführlichem Logging und automatischen Unit-Tests.
+
+---
+
+## Projektstruktur
+
+- `logistic_model.py`  
+  Trainiert und bewertet das Modell mit ausführlichem Logging und Zeitmessung.  
+- `test_logistic_model.py`  
+  Enthält Unit-Tests für die Funktionen `fit()` (Laufzeit) und `predict()` (Vorhersagequalität).  
+- `advertising.csv`  
+  Beispiel-Datensatz für das Training und die Tests.  
+- `auto_start.ipynb`  
+  Notebook zum automatischen Ausführen von Training und Unit-Tests.  
+
+---
+
+## Online Ausführen via Binder
+
+[![Open In Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/deinGitHubUser/deinRepoName/HEAD?filepath=auto_start.ipynb)
+
+Klicke auf den Button, um das Jupyter Notebook `auto_start.ipynb` interaktiv online zu starten.  
+Das Notebook führt automatisch das Training mit Logging durch und führt anschließend die Unit-Tests aus.
+
+
+## Logging & Testergebnisse
+
+Beim Ausführen erhältst du eine ausführliche Ausgabe mit:  
+- Ladeprozess der Daten  
+- Laufzeitmessung einzelner Schritte  
+- Genauigkeit (Accuracy) und Konfusionsmatrix der Vorhersagen  
+- Ausgabe der Testergebnisse mit Erfolgsmeldung oder Fehlerdetails  
+
+---
+
+
 
 
 
