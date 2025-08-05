@@ -1,9 +1,7 @@
 
 # Logging-unit-Testing-Logistic-Regression
 
-##[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/logistic_model/HEAD)
-[![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/HEAD?labpath=logistic_model.py)
-
+[![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/HEAD?labpath=logistic-regression.ipynb)
 
 ## Beschreibung
 
