@@ -70,10 +70,10 @@ python -m unittest test_logistic_model.py
 
 ---
 
-## Fazit
-Das Projekt erfüllt alle Anforderungen der Prüfungsaufgabe:
-✅ Logging & Zeitmessung implementiert  
-✅ Zwei Unit-Tests für `fit()` und `predict()`  
-✅ Testdaten vorhanden  
-✅ Ausführung via Binder oder lokal möglich  
-✅ Dokumentation vollständig  
+## Logging & Testergebnisse
+
+Beim Ausführen erhältst du eine ausführliche Ausgabe mit:  
+- Ladeprozess der Daten  
+- Laufzeitmessung einzelner Schritte  
+- Genauigkeit (Accuracy) und Konfusionsmatrix der Vorhersagen  
+- Ausgabe der Testergebnisse mit Erfolgsmeldung oder Fehlerdetails 
