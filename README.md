@@ -1,41 +1,79 @@
 # Logistic Regression mit Logging und Unit-Tests
 
-
 ## Online Ausführen via Binder
-
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=auto_start.ipynb)
 
 Klicke auf den Button, um das Jupyter Notebook `auto_start.ipynb` interaktiv online zu starten.  
 Das Notebook führt automatisch das Training mit Logging durch und führt anschließend die Unit-Tests aus.
-## Auto Start (Modell & Testing)
 
+---
 
-# Projektbeschreibung
+## Projektbeschreibung
+Dieses Projekt zeigt ein Beispiel für maschinelles Lernen mit **Logistic Regression**, kombiniert mit **Logging** und **automatisierten Unit-Tests**.
 
-Dieses Projekt zeigt ein Beispiel für maschinelles Lernen mit ausführlichem Logging und automatischen Unit-Tests.
+Das Ziel ist es, zu demonstrieren, wie man Modelltraining und -vorhersage systematisch testet und dokumentiert.
+
+---
 
 ## Projektstruktur
+- **`logistic_model.py`** – Trainiert und bewertet das Modell mit `my_logger` und `my_timer` für Logging & Zeitmessung.  
+- **`test_logistic_model.py`** – Enthält Unit-Tests für:
+  - `fit()` → prüft, dass die Trainingszeit im erlaubten Rahmen bleibt  
+  - `predict()` → prüft die Vorhersagegenauigkeit (Accuracy + Confusion Matrix)  
+- **`advertising.csv`** – Datensatz für Training & Tests  
+- **`auto_start.ipynb`** – Führt automatisch Training & Tests aus  
 
-- `logistic_model.py`  
-  Trainiert und bewertet das Modell mit ausführlichem Logging und Zeitmessung.  
-- `test_logistic_model.py`  
-  Enthält Unit-Tests für die Funktionen `fit()` (Laufzeit) und `predict()` (Vorhersagequalität).  
-- `advertising.csv`  
-  Beispiel-Datensatz für das Training und die Tests.  
-- `auto_start.ipynb`  
-  Notebook zum automatischen Ausführen von Training und Unit-Tests.  
+---
 
+## Logging und Timer
+- **`my_logger`**: schreibt Start, Ende und Ergebnis jeder Funktion ins Logfile und in die Konsole.  
+- **`my_timer`**: misst die Laufzeit jeder Funktion und loggt diese.  
 
-## Logging & Testergebnisse
+Beispielhafte Logausgabe:
+```
+2025-10-05 10:16:37,898 - INFO - Running 'load_data'
+2025-10-05 10:16:37,972 - INFO - Training abgeschlossen
+2025-10-05 10:16:37,974 - INFO - Accuracy: 0.97
+2025-10-05 10:16:37,974 - INFO - Confusion Matrix:
+[[143   3]
+ [  7 147]]
+```
 
-Beim Ausführen erhältst du eine ausführliche Ausgabe mit:  
-- Ladeprozess der Daten  
-- Laufzeitmessung einzelner Schritte  
-- Genauigkeit (Accuracy) und Konfusionsmatrix der Vorhersagen  
-- Ausgabe der Testergebnisse mit Erfolgsmeldung oder Fehlerdetails  
+---
 
+## Ergebnisse der Unit-Tests
+Beim Ausführen der Tests (`python -m unittest test_logistic_model.py`) wird Folgendes ausgegeben:
 
+```
+=== Starte Unit-Tests ===
+Ran 2 tests in 0.554s
+OK
+```
 
+Beide Testfälle laufen erfolgreich:
+1. **Test `predict()`** prüft die Genauigkeit und Confusion Matrix  
+2. **Test `fit()`** prüft die Laufzeit (max. 120 % der Referenzzeit)
 
+---
 
+## Projekt ausführen (lokal)
+```bash
+# Schritt 1: Abhängigkeiten installieren
+pip install -r requirements.txt
 
+# Schritt 2: Modell trainieren
+python logistic_model.py
+
+# Schritt 3: Unit-Tests starten
+python -m unittest test_logistic_model.py
+```
+
+---
+
+## Fazit
+Das Projekt erfüllt alle Anforderungen der Prüfungsaufgabe:
+✅ Logging & Zeitmessung implementiert  
+✅ Zwei Unit-Tests für `fit()` und `predict()`  
+✅ Testdaten vorhanden  
+✅ Ausführung via Binder oder lokal möglich  
+✅ Dokumentation vollständig  
