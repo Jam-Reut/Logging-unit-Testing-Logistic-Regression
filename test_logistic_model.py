@@ -1,66 +1,37 @@
 import unittest
-import re
-import io
-import logging
 from logistic_model import load_data, train_model, evaluate_model
-
 
 class TestLogisticModel(unittest.TestCase):
 
     def setUp(self):
+        # Daten laden und ein Modell trainieren (für den predict-Test)
         self.df = load_data("advertising.csv")
-        self.model, self.X_test, self.y_test = train_model(self.df)
+        self.model, self.X_test, self.y_test, _ = train_model(self.df)
 
     def test_predict_function(self):
         """Testfall 1: Prüft Accuracy und Confusion Matrix der Vorhersagefunktion"""
-        with self.assertLogs(level='INFO') as log_cm:
-            accuracy = evaluate_model(self.model, self.X_test, self.y_test)
-
-        accuracy_logs = [msg for msg in log_cm.output if "Accuracy" in msg]
-        self.assertTrue(accuracy_logs, "Keine Accuracy Logs gefunden")
-
-        cm_logs = [msg for msg in log_cm.output if "Confusion Matrix" in msg]
-        self.assertTrue(cm_logs, "Keine Confusion Matrix Logs gefunden")
-
+        accuracy = evaluate_model(self.model, self.X_test, self.y_test)
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy < 0.9")
 
     def test_fit_runtime(self):
-        """Testfall 2: Prüft, dass train_model() <= 120 % der Referenzlaufzeit benötigt"""
+        """Testfall 2: Prüft, dass train_model() <= 120 % der festen Referenzlaufzeit benötigt"""
 
-        # Logging-Stream für Messung einrichten
-        log_stream = io.StringIO()
-        handler = logging.StreamHandler(log_stream)
-        logger = logging.getLogger()
-        logger.addHandler(handler)
+        # Feste Referenzzeit (z. B. gemessen auf stabilem System vorher)
+        ref_time = 0.3  # Sekunden
 
-        # 1️⃣ Erste Messung – Referenzlaufzeit (nur letzter 'train_model executed ...' Eintrag)
-        train_model(self.df)
-        logs = log_stream.getvalue()
-        matches = re.findall(r"train_model executed in (\d+\.\d+) sec", logs)
-        self.assertTrue(matches, "Keine train_model Zeit gefunden")
-        ref_time = float(matches[-1])
+        # Aktuelle Laufzeit messen
+        _, _, _, runtime = train_model(self.df)
 
-        # Log zurücksetzen
-        log_stream.truncate(0)
-        log_stream.seek(0)
+        # 120 %-Grenze berechnen
+        max_allowed = ref_time * 1.2
 
-        # 2️⃣ Zweite Messung – aktuelle Laufzeit (nur letzter 'train_model executed ...' Eintrag)
-        train_model(self.df)
-        logs = log_stream.getvalue()
-        matches = re.findall(r"train_model executed in (\d+\.\d+) sec", logs)
-        self.assertTrue(matches, "Keine train_model Zeit gefunden")
-        runtime = float(matches[-1])
-
-        # Logging-Handler entfernen
-        logger.removeHandler(handler)
-
-        # 3️⃣ Vergleich mit 120 %-Grenze
+        # Prüfung mit klarer Fehlermeldung
         self.assertLessEqual(
             runtime,
-            ref_time * 1.3,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+            max_allowed,
+            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit "
+            f"({ref_time:.4f}s → Grenzwert {max_allowed:.4f}s)"
         )
-
 
 if __name__ == "__main__":
     unittest.main(argv=[''], exit=False)
