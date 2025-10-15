@@ -34,19 +34,20 @@ def load_data(file_path):
 
 def train_model(df):
     """
-    Trainiert ein LogisticRegression-Modell.
+    Trainiert ein LogisticRegression-Modell effizient.
     Gibt zurück: model, X_test, y_test, duration_seconds
     """
     start = time.perf_counter()
 
-    # --- Spalten prüfen, um KeyError zu vermeiden ---
+    # --- Spalten prüfen ---
     required_columns = ['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage', 'Clicked on Ad']
-    for col in required_columns:
-        if col not in df.columns:
-            raise ValueError(f"Spalte '{col}' fehlt im DataFrame!")
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Fehlende Spalten im DataFrame: {missing}")
 
-    X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
-    y = df['Clicked on Ad']
+    # Referenzen auf die Spalten statt Kopien erstellen (schneller, weniger Speicher)
+    X = df.loc[:, ['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
+    y = df.loc[:, 'Clicked on Ad']
 
     # Train/Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
