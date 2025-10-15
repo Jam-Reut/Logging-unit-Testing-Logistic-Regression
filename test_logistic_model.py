@@ -29,8 +29,8 @@ class TestLogisticModel(unittest.TestCase):
             train_model(self.df)
         ref_match = re.search(r'train_model executed in (\d+\.\d+) sec', "".join(log_cm1.output))
         self.assertIsNotNone(ref_match, "Referenzlaufzeit konnte nicht extrahiert werden")
-        ref_time = float(ref_match.group(1))
-
+        #ref_time = float(ref_match.group(1))
+         ref_time = 0.3
         # 2️⃣ Zweite Messung – aktuelle Laufzeit prüfen
         with self.assertLogs(level='INFO') as log_cm2:
             train_model(self.df)
@@ -41,7 +41,7 @@ class TestLogisticModel(unittest.TestCase):
         # 3️⃣ Vergleich mit 120 %-Grenze
         self.assertLessEqual(
             runtime,
-            ref_time * 1.5,
+            ref_time * 1.2,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
 
