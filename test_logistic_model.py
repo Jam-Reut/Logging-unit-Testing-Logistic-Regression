@@ -29,8 +29,8 @@ class TestLogisticModel(unittest.TestCase):
             train_model(self.df)
         ref_match = re.search(r'train_model executed in (\d+\.\d+) sec', "".join(log_cm1.output))
         self.assertIsNotNone(ref_match, "Referenzlaufzeit konnte nicht extrahiert werden")
-        #ref_time = float(ref_match.group(1))
-         ref_time = 0.3
+        ref_time = float(ref_match.group(1))
+      
         # 2️⃣ Zweite Messung – aktuelle Laufzeit prüfen
         with self.assertLogs(level='INFO') as log_cm2:
             train_model(self.df)
