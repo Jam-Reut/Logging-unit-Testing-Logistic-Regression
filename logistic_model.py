@@ -45,22 +45,19 @@ def train_model(df):
     if missing:
         raise ValueError(f"Fehlende Spalten im DataFrame: {missing}")
 
-    # Referenzen auf die Spalten statt Kopien erstellen (schneller, weniger Speicher)
+    # Referenzen auf die Spalten statt Kopien (schneller, weniger Speicher)
     X = df.loc[:, ['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
     y = df.loc[:, 'Clicked on Ad']
 
     # Train/Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-    # Modell trainieren
-    model = LogisticRegression(max_iter=1000)
+    # Modell trainieren – schneller Solver für kleine Datensätze
+    model = LogisticRegression(max_iter=1000, solver='liblinear')
     model.fit(X_train, y_train)
 
-    end = time.perf_counter()
-    duration = end - start
-    logger.info("Training abgeschlossen")
-    logger.info(f"train_model executed in {duration:.4f} sec")
-    logger.info("Finished 'train_model'")
+    duration = time.perf_counter() - start
+    logger.info(f"Training abgeschlossen in {duration:.4f} sec")
 
     return model, X_test, y_test, duration
 
