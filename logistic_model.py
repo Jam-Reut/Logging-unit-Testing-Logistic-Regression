@@ -1,71 +1,82 @@
-# logistic_model.py
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix
-import time
 import logging
+import time
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix
 
-# Logger konfigurieren
-logger = logging.getLogger(__name__)
+# Logging konfigurieren
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
+logger = logging.getLogger(__name__)
 
-def load_data(filename):
-    """Lädt die CSV-Daten und loggt die Ausführungszeit."""
-    logger.info("Running 'load_data'")
-    start = time.perf_counter()
-    df = pd.read_csv(filename)
-    end = time.perf_counter()
-    logger.info(f"load_data executed in {end - start:.4f} sec")
-    logger.info("Finished 'load_data'")
+def my_timer(func):
+    """Decorator zum Messen und Loggen der Laufzeit"""
+    def wrapper(*args, **kwargs):
+        logger.info(f"Running '{func.__name__}'")
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        elapsed = end - start
+        logger.info(f"{func.__name__} executed in {elapsed:.4f} sec")
+        logger.info(f"Finished '{func.__name__}'")
+        return result
+    return wrapper
+
+@my_timer
+def load_data(file_path):
+    logger.info(f"Lade Daten aus {file_path}")
+    df = pd.read_csv(file_path)
+    logger.info(f"Daten geladen mit Shape {df.shape}")
     return df
-
 
 def train_model(df):
     """
-    Trainiert ein logistisches Regressionsmodell.
-    Gibt (model, X_test, y_test, duration_seconds) zurück.
+    Trainiert ein LogisticRegression-Modell.
+    Gibt zurück: model, X_test, y_test, duration_seconds
     """
-    logger.info("Running 'train_model'")
     start = time.perf_counter()
 
-    # Beispiel-Datensatzaufbereitung
-    X = df.drop("Clicked_on_Ad", axis=1)
-    y = df["Clicked_on_Ad"]
+    # --- Spalten prüfen, um KeyError zu vermeiden ---
+    required_columns = ['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage', 'Clicked on Ad']
+    for col in required_columns:
+        if col not in df.columns:
+            raise ValueError(f"Spalte '{col}' fehlt im DataFrame!")
+
+    X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
+    y = df['Clicked on Ad']
+
+    # Train/Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
+    # Modell trainieren
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
 
     end = time.perf_counter()
     duration = end - start
-
     logger.info("Training abgeschlossen")
     logger.info(f"train_model executed in {duration:.4f} sec")
     logger.info("Finished 'train_model'")
 
     return model, X_test, y_test, duration
 
-
+@my_timer
 def evaluate_model(model, X_test, y_test):
-    """Bewertet das Modell mit Accuracy und Confusion Matrix."""
-    logger.info("Running 'evaluate_model'")
-    start = time.perf_counter()
-
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-
-    end = time.perf_counter()
+    predictions = model.predict(X_test)
+    acc = accuracy_score(y_test, predictions)
+    cm = confusion_matrix(y_test, predictions)
 
     logger.info(f"Accuracy: {acc:.2f}")
     logger.info("Confusion Matrix:")
     logger.info(f"\n{cm}")
-    logger.info(f"evaluate_model executed in {end - start:.4f} sec")
-    logger.info("Finished 'evaluate_model'")
 
-    print(f"Accuracy: {acc:.2f}")
     return acc
+
+if __name__ == "__main__":
+    df = load_data("advertising.csv")
+    model, X_test, y_test, duration = train_model(df)
+    accuracy = evaluate_model(model, X_test, y_test)
+    print(f"Accuracy: {accuracy:.2f}, Training Time: {duration:.4f} sec")
