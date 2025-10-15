@@ -24,40 +24,40 @@ class TestLogisticModel(unittest.TestCase):
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy < 0.9")
 
     def test_fit_runtime(self):
-        """Testfall 2: Prüft, dass train_model() <= 120 % der Referenzlaufzeit benötigt"""
-        
-        # Temporären Logging-Stream vorbereiten
-        log_stream = io.StringIO()
-        handler = logging.StreamHandler(log_stream)
-        logger = logging.getLogger()
-        logger.addHandler(handler)
+    """Testfall 2: Prüft, dass train_model() <= 120 % der Referenzlaufzeit benötigt"""
+    
+    import io, logging, re
+    log_stream = io.StringIO()
+    handler = logging.StreamHandler(log_stream)
+    logger = logging.getLogger()
+    logger.addHandler(handler)
 
-        # 1️⃣ Erste Messung – Referenzlaufzeit aus Log extrahieren
-        train_model(self.df)
-        logs = log_stream.getvalue()
-        ref_match = re.search(r'train_model executed in (\d+\.\d+) sec', logs)
-        self.assertIsNotNone(ref_match, "Referenzlaufzeit konnte nicht extrahiert werden")
-        ref_time = float(ref_match.group(1))
+    # 1️⃣ Erste Messung – Referenzlaufzeit (letzter Wert aus Log)
+    train_model(self.df)
+    logs = log_stream.getvalue()
+    matches = re.findall(r'train_model executed in (\d+\.\d+) sec', logs)
+    self.assertTrue(matches, "Keine train_model Zeit gefunden")
+    ref_time = float(matches[-1])
 
-        # Stream zurücksetzen
-        log_stream.truncate(0)
-        log_stream.seek(0)
+    log_stream.truncate(0)
+    log_stream.seek(0)
 
-        # 2️⃣ Zweite Messung – aktuelle Laufzeit aus Log extrahieren
-        train_model(self.df)
-        logs = log_stream.getvalue()
-        run_match = re.search(r'train_model executed in (\d+\.\d+) sec', logs)
-        self.assertIsNotNone(run_match, "Laufzeit konnte nicht extrahiert werden")
-        runtime = float(run_match.group(1))
+    # 2️⃣ Zweite Messung – aktuelle Laufzeit (letzter Wert aus Log)
+    train_model(self.df)
+    logs = log_stream.getvalue()
+    matches = re.findall(r'train_model executed in (\d+\.\d+) sec', logs)
+    self.assertTrue(matches, "Keine train_model Zeit gefunden")
+    runtime = float(matches[-1])
 
-        # Logging-Handler entfernen
-        logger.removeHandler(handler)
+    logger.removeHandler(handler)
 
-        # 3️⃣ Vergleich mit 120 %-Grenze
-        self.assertLessEqual(
-            runtime,
-            ref_time * 1.2,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+    # 3️⃣ Vergleich mit 120 %-Grenze
+    self.assertLessEqual(
+        runtime,
+        ref_time * 1.2,
+        f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+    
+
         )
 
 if __name__ == "__main__":
