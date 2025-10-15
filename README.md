@@ -31,23 +31,20 @@ Das Ziel ist es, zu demonstrieren, wie man Modelltraining und -vorhersage system
 
 Beispielhafte Logausgabe:
 ```
-2025-10-05 10:16:37,898 - INFO - Running 'load_data'
-2025-10-05 10:16:37,972 - INFO - Training abgeschlossen
-2025-10-05 10:16:37,974 - INFO - Accuracy: 0.97
-2025-10-05 10:16:37,974 - INFO - Confusion Matrix:
-[[143   3]
- [  7 147]]
-```
-
----
-
-## Ergebnisse der Unit-Tests
-Beim Ausführen der Tests (`python -m unittest test_logistic_model.py`) wird Folgendes ausgegeben:
-
-```
 === Starte Unit-Tests ===
-Ran 2 tests in 0.554s
+INFO - Running 'load_data'
+INFO - Daten geladen mit Shape (1000, 10)
+INFO - Training abgeschlossen in 0.0066 sec
+INFO - Accuracy: 0.96
+INFO - Confusion Matrix:
+[[143   3]
+ [  8 146]]
+.
+----------------------------------------------------------------------
+Ran 2 tests in 0.179s
+
 OK
+
 ```
 
 Beide Testfälle laufen erfolgreich:
