@@ -1,5 +1,7 @@
 import unittest
 import re
+import io
+import logging
 from logistic_model import load_data, train_model, evaluate_model
 
 class TestLogisticModel(unittest.TestCase):
@@ -24,19 +26,32 @@ class TestLogisticModel(unittest.TestCase):
     def test_fit_runtime(self):
         """Testfall 2: Prüft, dass train_model() <= 120 % der Referenzlaufzeit benötigt"""
         
-        # 1️⃣ Erste Messung – Referenzlaufzeit bestimmen
-        with self.assertLogs(level='INFO') as log_cm1:
-            train_model(self.df)
-        ref_match = re.search(r'train_model executed in (\d+\.\d+) sec', "".join(log_cm1.output))
+        # Temporären Logging-Stream vorbereiten
+        log_stream = io.StringIO()
+        handler = logging.StreamHandler(log_stream)
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+
+        # 1️⃣ Erste Messung – Referenzlaufzeit aus Log extrahieren
+        train_model(self.df)
+        logs = log_stream.getvalue()
+        ref_match = re.search(r'train_model executed in (\d+\.\d+) sec', logs)
         self.assertIsNotNone(ref_match, "Referenzlaufzeit konnte nicht extrahiert werden")
         ref_time = float(ref_match.group(1))
-      
-        # 2️⃣ Zweite Messung – aktuelle Laufzeit prüfen
-        with self.assertLogs(level='INFO') as log_cm2:
-            train_model(self.df)
-        run_match = re.search(r'train_model executed in (\d+\.\d+) sec', "".join(log_cm2.output))
+
+        # Stream zurücksetzen
+        log_stream.truncate(0)
+        log_stream.seek(0)
+
+        # 2️⃣ Zweite Messung – aktuelle Laufzeit aus Log extrahieren
+        train_model(self.df)
+        logs = log_stream.getvalue()
+        run_match = re.search(r'train_model executed in (\d+\.\d+) sec', logs)
         self.assertIsNotNone(run_match, "Laufzeit konnte nicht extrahiert werden")
         runtime = float(run_match.group(1))
+
+        # Logging-Handler entfernen
+        logger.removeHandler(handler)
 
         # 3️⃣ Vergleich mit 120 %-Grenze
         self.assertLessEqual(
