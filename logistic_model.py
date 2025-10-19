@@ -55,8 +55,8 @@ def load_data(file_path: str):
 @my_logger
 @my_timer
 def train_model(df):
-    X = df.drop("Clicked_on_Ad", axis=1)
-    y = df["Clicked_on_Ad"]
+    X = df.drop("Clicked on Ad", axis=1)
+    y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     model = LogisticRegression(max_iter=1000)
