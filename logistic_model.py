@@ -48,7 +48,6 @@ def get_last_timing(func_name: str):
 def load_data(file_path: str):
     logging.info(f"Lade Daten aus {file_path}")
     df = pd.read_csv(file_path)
-	print(df.columns)
     logging.info(f"Daten geladen mit Shape {df.shape}")
     return df
 
