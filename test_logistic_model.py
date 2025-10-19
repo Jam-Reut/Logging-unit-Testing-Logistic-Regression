@@ -1,10 +1,10 @@
 import unittest
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-
 class TestLogisticModel(unittest.TestCase):
 
     def setUp(self):
+        # Daten laden und Modell einmal trainieren
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
 
@@ -16,23 +16,25 @@ class TestLogisticModel(unittest.TestCase):
     def test_fit_runtime(self):
         """Testfall 2: Prüft, dass train_model() ≤ 120 % der Referenzlaufzeit benötigt"""
 
-        # 1️⃣ Erste Ausführung = Referenzzeit
-        _ = train_model(self.df)
-        ref_time = get_last_timing("train_model")
-        self.assertIsNotNone(ref_time, "Referenzlaufzeit konnte nicht gemessen werden")
+        # Fixe Referenzlaufzeit (z.B. 0.3 s)
+        ref_runtime = 0.3
+        max_allowed = ref_runtime * 1.2  # 120 % der Referenzzeit
 
-        # 2️⃣ Zweite Ausführung = aktuelle Zeit
-        _ = train_model(self.df)
-        runtime = get_last_timing("train_model")
-        self.assertIsNotNone(runtime, "Laufzeit konnte nicht gemessen werden")
+        # Mehrfachmessung zur Stabilisierung
+        runtimes = []
+        for _ in range(3):
+            _ = train_model(self.df)
+            runtime = get_last_timing("train_model")
+            self.assertIsNotNone(runtime, "Laufzeit konnte nicht gemessen werden")
+            runtimes.append(runtime)
 
-        # 3️⃣ Vergleich mit 120 % Toleranz
+        avg_runtime = sum(runtimes) / len(runtimes)
+
         self.assertLessEqual(
-            runtime,
-            ref_time * 1.2,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+            avg_runtime,
+            max_allowed,
+            f"Durchschnittliche Laufzeit {avg_runtime:.4f}s überschreitet 120 % der Referenzzeit ({max_allowed:.4f}s)"
         )
-
 
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)
