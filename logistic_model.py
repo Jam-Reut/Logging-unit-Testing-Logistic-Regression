@@ -8,7 +8,6 @@ inklusive Logging und Zeitmessung (nach Ori Cohen).
 from functools import wraps
 import logging
 import time
-import inspect
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -16,7 +15,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 
 
 # ======================================================
-# LOGGING SETUP
+# LOGGING EINSTELLUNGEN
 # ======================================================
 logging.basicConfig(
     filename="ml_system.log",
@@ -26,54 +25,38 @@ logging.basicConfig(
 )
 
 
-# ------------------------------------------------------
-# Testfall-Erkennung (ermöglicht Logging im Kontext)
-# ------------------------------------------------------
-def get_current_testcase():
-    for frame in inspect.stack():
-        if "test_predict" in frame.function or "test_1_predict_function" in frame.function:
-            return "TESTFALL 1 (Vorhersage)"
-        if "test_fit_runtime" in frame.function or "test_2_fit_runtime" in frame.function:
-            return "TESTFALL 2 (Laufzeit)"
-    return "MANUELLER LAUF"
-
-
-# ------------------------------------------------------
-# Decorators: Logging und Zeitmessung (nach Ori Cohen)
-# ------------------------------------------------------
+# ======================================================
+# DECORATORS
+# ======================================================
 def my_logger(func):
-    """Decorator: schreibt Funktionsaufrufe ins Logfile."""
+    """Protokolliert Funktionsaufrufe im Logfile."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        context = get_current_testcase()
-        logging.info(f"{context} → {func.__name__} gestartet")
+        logging.info(f"Running: {func.__name__} | args={args} | kwargs={kwargs}")
         result = func(*args, **kwargs)
-        logging.info(f"{context} → {func.__name__} abgeschlossen")
+        logging.info(f"Completed: {func.__name__}")
         return result
     return wrapper
 
 
 def my_timer(func):
-    """Decorator: misst Laufzeit einer Funktion."""
+    """Misst und gibt Laufzeit der Funktion aus."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
         duration = time.time() - start
         print(f"  → {func.__name__} ran in: {duration:.4f} sec")
-        logging.info(f"{func.__name__} ran in: {duration:.4f} sec")
         return result
     return wrapper
 
 
 # ======================================================
-# FUNKTIONEN DER PIPELINE
+# FUNKTIONEN
 # ======================================================
-
 @my_logger
 @my_timer
 def load_data(filename):
-    """Schritt 1: Daten laden."""
     print("\n=== Schritt 1: Lade Datensatz ===")
     df = pd.read_csv(filename)
     print(f"  Datei: {filename}")
@@ -83,7 +66,6 @@ def load_data(filename):
 @my_logger
 @my_timer
 def train_model(df):
-    """Schritt 2: Modell trainieren."""
     print("\n=== Schritt 2: Trainiere Modell ===")
     X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
     y = df['Clicked on Ad']
@@ -97,7 +79,6 @@ def train_model(df):
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-    """Schritt 3: Modell evaluieren."""
     print("\n=== Schritt 3: Modellevaluierung ===")
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
@@ -110,24 +91,20 @@ def evaluate_model(model, X_test, y_test):
     print("\n  Klassifikationsbericht (Auszug):")
     for line in report.strip().split("\n")[2:]:
         print("   ", line)
-		print("\n  Klassifikationsbericht (Auszug):")
     return acc
 
 
 # ======================================================
-# PIPELINE-AUSFÜHRUNG (ohne Laufzeitanalyse)
+# PIPELINE START
 # ======================================================
 if __name__ == "__main__":
-  
-    # Schritt 1: Daten laden
+    print("=== Starte logistic_model.py ===")
+
     df = load_data("advertising.csv")
 
-    # Schritt 2: Zwei Trainingsdurchläufe (zur Demonstration)
     model, X_test, y_test = train_model(df)
     _ = train_model(df)
 
-    # Schritt 3: Modellevaluierung
     acc = evaluate_model(model, X_test, y_test)
 
-    # Finale Ausgabe
     print(f"\nFinal Accuracy: {acc:.2f}\n")
