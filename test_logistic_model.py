@@ -5,10 +5,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
     def setUp(self):
         print("\n=== Starte Unit-Tests: test_logistic_model.py ===")
-        print("Setup initiales Training wird ausgeführt...\n")
+        #print("Setup initiales Training wird ausgeführt...\n")
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
-        print("Setup abgeschlossen.\n")
+        print("Initiales Setup abgeschlossen.\n")
 
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
