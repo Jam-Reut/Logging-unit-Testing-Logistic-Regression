@@ -54,23 +54,4 @@ return __timings.get(func_name)
 def load_data(file_path: str):
 logging.info(f"Lade Daten aus {file_path}")
 df = pd.read_csv(file_path)
-logging.info(f"Daten geladen mit Shape {df.shape}")
-return df
-
-@my_logger
-@my_timer
-def train_model(df):
-X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
-y = df['Clicked on Ad']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
-logging.info("Training abgeschlossen")
-return model, X_test, y_test
-
-@my_logger
-@my_timer
-def evaluate_model(model, X_test, y_test):
-y_pred = model.predict(X_test)
-acc = accuracy_score(y_test, y_pred)
-cm = confusion_matrix(_
+log

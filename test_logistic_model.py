@@ -37,5 +37,5 @@ def test_fit_runtime(self):
     )
 ```
 
-if **name** == "**main**":
+if **name** == "__main__":
 unittest.main(argv=[""], exit=False)
