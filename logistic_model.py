@@ -83,4 +83,4 @@ def evaluate_model(model, X_test, y_test):
 if __name__ == "__main__":
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
-    acc, cm = evaluate_model(model, X_
+    acc, cm = evaluate_model(model, X_test, y_test)
