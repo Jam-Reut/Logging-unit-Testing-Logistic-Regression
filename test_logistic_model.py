@@ -1,6 +1,6 @@
 # ======================================================
-# Unit Tests for Logistic Regression Pipeline
-# Ori Cohen–style: Accuracy & 120%-Runtime tests
+# Unit Tests für Logistic Regression Pipeline
+# Nach Aufgabenstellung: Accuracy + Laufzeit (120 %)
 # ======================================================
 
 import unittest
@@ -8,7 +8,7 @@ import time
 import logging
 from logistic_model import load_data, train_model, evaluate_model
 
-# Central test log
+# Test-Logging
 logging.basicConfig(
     filename="test_results.log",
     level=logging.INFO,
@@ -17,48 +17,50 @@ logging.basicConfig(
 
 
 class TestLogisticModel(unittest.TestCase):
-    """Automated ML Unit Tests with detailed logging."""
+    """Automatisierte Tests mit Logging & Laufzeitanalyse."""
 
     @classmethod
     def setUpClass(cls):
-        logging.info("🚀 Setting up: loading data and training model once.")
+        logging.info("🚀 Test-Setup: Lade Daten und trainiere Modell einmalig.")
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
 
     def test_predict_accuracy(self):
-        """Test 1: Validate predict() using Accuracy and Confusion Matrix."""
-        logging.info("▶️ Running test_predict_accuracy()")
+        """Test 1: Prüft Modellgenauigkeit & Confusion Matrix."""
+        logging.info("▶️ Starte Test: test_predict_accuracy()")
         accuracy = evaluate_model(self.model, self.X_test, self.y_test)
-        logging.info(f"✅ Accuracy achieved: {accuracy:.3f}")
-        self.assertGreaterEqual(accuracy, 0.9, "❌ Accuracy below 0.9 threshold.")
-        logging.info("✅ test_predict_accuracy PASSED\n")
+        logging.info(f"✅ Accuracy erreicht: {accuracy:.3f}")
+        self.assertGreaterEqual(
+            accuracy, 0.9, "❌ Accuracy unter 0.9 – Modell unzureichend."
+        )
+        logging.info("✅ Test test_predict_accuracy bestanden.\n")
 
     def test_fit_runtime(self):
-        """Test 2: Verify train_model runtime ≤ 120% of baseline."""
-        logging.info("▶️ Running test_fit_runtime()")
+        """Test 2: Prüft Trainingslaufzeit ≤ 120 % der Referenz."""
+        logging.info("▶️ Starte Test: test_fit_runtime()")
 
-        # Baseline training time
+        # 1️⃣ Erster Lauf (Referenzzeit)
         start = time.perf_counter()
         _ = train_model(self.df)
         baseline = time.perf_counter() - start
-        logging.info(f"Baseline runtime: {baseline:.4f} sec")
+        logging.info(f"Referenzlaufzeit: {baseline:.4f} sec")
 
-        # Second training
+        # 2️⃣ Zweiter Lauf (aktueller Test)
         start = time.perf_counter()
         _ = train_model(self.df)
         runtime = time.perf_counter() - start
-        logging.info(f"Current runtime: {runtime:.4f} sec")
+        logging.info(f"Aktuelle Laufzeit: {runtime:.4f} sec")
 
-        # Compare with 120% tolerance (strict requirement)
+        # 3️⃣ Prüfung ≤ 120 %
         limit = baseline * 1.2
-        logging.info(f"Allowed limit (120%): {limit:.4f} sec")
+        logging.info(f"Erlaubtes Limit (120 %): {limit:.4f} sec")
 
         self.assertLessEqual(
             runtime,
             limit,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({baseline:.4f}s)"
         )
-        logging.info("✅ test_fit_runtime PASSED\n")
+        logging.info("✅ Test test_fit_runtime bestanden.\n")
 
 
 if __name__ == "__main__":
