@@ -42,15 +42,19 @@ class TestLogisticRegressionModel(unittest.TestCase):
     def test_2_fit_runtime(self):
         print("=== Testfall 2: Laufzeit der Trainingsfunktion (fit) ===\n")
 
-        # 1️⃣ Referenzlaufzeit
+        print("=== Laufzeitmessung: train_model ===\n")
+
+        # 1️⃣ Referenzlaufzeit (Baseline)
         t0 = time.perf_counter()
         _ = train_model(self.df)
         ref_time = time.perf_counter() - t0
+        print(f"  Referenzlauf (Baseline) abgeschlossen in {ref_time:.4f} sec\n")
 
         # 2️⃣ Testlaufzeit
         t1 = time.perf_counter()
         _ = train_model(self.df)
         test_time = time.perf_counter() - t1
+        print(f"  Testlauf abgeschlossen in {test_time:.4f} sec\n")
 
         limit = ref_time * 1.2
 

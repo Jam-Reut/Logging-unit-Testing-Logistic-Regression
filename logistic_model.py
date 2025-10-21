@@ -85,7 +85,7 @@ def evaluate_model(model, X_test, y_test):
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred, digits=2)
 
-    print(f"  Genauigkeit (Accuracy): {acc:.2f}\n")
+    print(f"  Genauigkeit (Accuracy): {acc:.2f}")
     print("  Confusion Matrix:")
     for row in cm:
         print(f"    {row}")
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     df = load_data("advertising.csv")
 
     model, X_test, y_test = train_model(df)
-    _ = train_model(df)
+    _ = train_model(df)  # zweiter Lauf für Zeitmessung / Logging
 
     acc = evaluate_model(model, X_test, y_test)
 
