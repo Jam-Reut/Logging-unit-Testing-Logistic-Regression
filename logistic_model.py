@@ -1,18 +1,23 @@
+# ======================================================
+# Logistic Regression Example
+# Implements Ori Cohen's my_logger & my_timer decorators
+# Fulfills assignment requirements for ML transparency
+# ======================================================
+
 import logging
 import time
-import pandas as pd
 from functools import wraps
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 
-# ===========================================
-# Decorators (nach Medium-Artikel)
-# ===========================================
-
+# ======================================================
+# Decorators (EXACTLY as in Cohen’s article)
+# ======================================================
 def my_logger(func):
-    """Decorator: loggt Funktionsaufruf und Parameter in eine Logdatei."""
+    """Decorator: log function calls into <function>.log"""
     logging.basicConfig(
         filename=f"{func.__name__}.log",
         level=logging.INFO,
@@ -27,34 +32,34 @@ def my_logger(func):
 
 
 def my_timer(func):
-    """Decorator: misst und gibt die Laufzeit einer Funktion aus."""
+    """Decorator: measure and print runtime"""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        t1 = time.time()
+        start = time.time()
         result = func(*args, **kwargs)
-        t2 = time.time() - t1
-        print(f"{func.__name__} ran in: {t2:.4f} sec")
+        end = time.time() - start
+        print(f"{func.__name__} ran in: {end:.4f} sec")
+        # optional: also log runtime in same logfile
+        logging.info(f"{func.__name__} ran in {end:.4f} sec")
         return result
     return wrapper
 
 
-# ===========================================
-# ML Workflow: Daten laden, trainieren, evaluieren
-# ===========================================
-
+# ======================================================
+# ML Pipeline Functions
+# ======================================================
 @my_logger
 @my_timer
 def load_data(file_path: str):
-    logging.info(f"Lade Daten aus {file_path}")
     df = pd.read_csv(file_path)
-    logging.info(f"Daten geladen mit Shape {df.shape}")
+    logging.info(f"Data loaded successfully with shape {df.shape}")
     return df
 
 
 @my_logger
 @my_timer
 def train_model(df):
-    """Trainiert ein logistisches Regressionsmodell und gibt Modell + Testdaten zurück."""
+    """Train logistic regression and return model/test sets"""
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(
@@ -62,19 +67,18 @@ def train_model(df):
     )
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
-    logging.info("Training abgeschlossen")
+    logging.info("Training completed successfully.")
     return model, X_test, y_test
 
 
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-    """Berechnet Accuracy und Confusion Matrix."""
+    """Evaluate the model and log results"""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    logging.info(f"Accuracy: {acc:.2f}")
-    logging.info(f"Confusion Matrix:\n{cm}")
+    logging.info(f"Model evaluation: Accuracy={acc:.3f}, ConfusionMatrix={cm.tolist()}")
     print(f"Accuracy: {acc:.2f}")
     print("Confusion Matrix:\n", cm)
     return acc, cm

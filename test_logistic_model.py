@@ -1,44 +1,44 @@
+# ======================================================
+# Unit Tests for logistic_model.py
+# According to Ori Cohen's testing + assignment specs
+# ======================================================
+
 import unittest
 import time
 from logistic_model import load_data, train_model, evaluate_model
 
 
 class TestLogisticModel(unittest.TestCase):
-    """Automatisierte Tests für Logging, Timing und Modellverhalten."""
 
     @classmethod
     def setUpClass(cls):
-        """Initialisierung: Daten laden & Modell trainieren."""
+        """Load dataset and train once"""
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
 
-    def test_predict_function(self):
-        """Testfall 1:
-        Prüft, dass die Vorhersagefunktion (predict) eine hohe Accuracy liefert.
-        """
+    def test_predict_accuracy(self):
+        """Test 1: Verify predict() via Accuracy & Confusion Matrix"""
         accuracy, cm = evaluate_model(self.model, self.X_test, self.y_test)
-        self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
-        self.assertEqual(cm.shape, (2, 2), "Confusion Matrix hat falsche Dimensionen")
+        self.assertGreaterEqual(accuracy, 0.9, "Accuracy below expected threshold (0.9)")
+        self.assertEqual(cm.shape, (2, 2), "Confusion matrix must be 2x2")
 
     def test_fit_runtime(self):
-        """Testfall 2:
-        Prüft, dass die Trainingsfunktion (fit) ≤ 120 % der Referenzlaufzeit benötigt.
-        """
-        # Referenzlaufzeit (repräsentativ)
+        """Test 2: Ensure fit() runtime ≤ 120% of reference"""
+        # Baseline training time
         start = time.time()
         _ = train_model(self.df)
-        ref_time = time.time() - start
+        baseline = time.time() - start
 
-        # Neue Laufzeit
+        # Second training run
         start = time.time()
         _ = train_model(self.df)
         runtime = time.time() - start
 
-        # Prüfung mit 120%-Grenze
+        # Assert within 120% tolerance
         self.assertLessEqual(
             runtime,
-            ref_time * 1.2,
-            f"Laufzeit {runtime:.4f}s überschreitet 120% der Referenzzeit ({ref_time:.4f}s)"
+            baseline * 1.2,
+            f"Training runtime {runtime:.4f}s exceeds 120% of baseline ({baseline:.4f}s)"
         )
 
 
