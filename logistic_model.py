@@ -117,8 +117,7 @@ def evaluate_model(model, X_test, y_test):
 # PIPELINE-AUSFÜHRUNG (ohne Laufzeitanalyse)
 # ======================================================
 if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===")
-
+  
     # Schritt 1: Daten laden
     df = load_data("advertising.csv")
 
