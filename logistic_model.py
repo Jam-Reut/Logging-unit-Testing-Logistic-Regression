@@ -92,7 +92,7 @@ def evaluate_model(model, X_test, y_test):
 # Hauptlauf
 # ==============================================
 if __name__ == "__main__":
-    print("\n=== Starte logistic_model.py ===")
+    #print("\n=== Starte logistic_model.py ===")
 
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
