@@ -110,6 +110,7 @@ def evaluate_model(model, X_test, y_test):
     print("\n  Klassifikationsbericht (Auszug):")
     for line in report.strip().split("\n")[2:]:
         print("   ", line)
+		print("\n  Klassifikationsbericht (Auszug):")
     return acc
 
 
