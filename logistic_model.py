@@ -1,22 +1,20 @@
 import logging
 import time
-import functools
 import pandas as pd
+from functools import wraps
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 
+
 # Logging-Konfiguration
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# internes Dictionary für Laufzeiten
-__timings = {}
-
-from functools import wraps
 
 def my_logger(func):
     import logging
     logging.basicConfig(filename=f"{func.__name__}.log", level=logging.INFO)
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         logging.info(f"Ran with args: {args}, and kwargs: {kwargs}")
@@ -26,6 +24,7 @@ def my_logger(func):
 
 def my_timer(func):
     import time
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         t1 = time.time()
@@ -34,10 +33,6 @@ def my_timer(func):
         print(f"{func.__name__} ran in: {t2:.4f} sec")
         return result
     return wrapper
-
-
-def get_last_timing(func_name: str):
-    return __timings.get(func_name)
 
 
 @my_logger
