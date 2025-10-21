@@ -1,31 +1,30 @@
 # ======================================================
 # Logistic Regression Pipeline
-# Ori Cohen Decorator Stil + Testfall-Markierungen im Logging
+# Ori Cohen Decorator Stil + Testfallformatiertes Logging
 # ======================================================
 
 from functools import wraps
 import logging
 import time
+import inspect
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # ------------------------------------------------------
-# Logging Setup (zentral für alle Funktionen)
+# Logging Setup
 # ------------------------------------------------------
 logging.basicConfig(
     filename="ml_system.log",
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    format="%(message)s",  # exakt wie Beispiel
     filemode="w"
 )
 
 # ------------------------------------------------------
-# Hilfsfunktion: Aktiven Testfall erkennen
+# Hilfsfunktion: Testfall-Kontext erkennen
 # ------------------------------------------------------
-import inspect
-
 def get_current_testcase():
     """Erkennt automatisch, ob Testfall 1 oder 2 aktiv ist."""
     for frame in inspect.stack():
@@ -36,32 +35,32 @@ def get_current_testcase():
     return "MANUELLER LAUF"
 
 # ------------------------------------------------------
-# Decorators (Ori Cohen Stil + Testfall Logging)
+# Decorators (Ori Cohen Stil + angepasstes Log-Format)
 # ------------------------------------------------------
 def my_logger(func):
-    """Decorator: Loggt Funktionsaufrufe mit Testfall-Kontext."""
+    """Decorator: Loggt Funktionsaufrufe mit Testfallkontext."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        test_context = get_current_testcase()
+        context = get_current_testcase()
         logging.info("=" * 70)
-        logging.info(f"{test_context} → {func.__name__} gestartet")
+        logging.info(f"{context} → {func.__name__} gestartet")
         logging.info(f"Running: {func.__name__} | args={args} | kwargs={kwargs}")
         result = func(*args, **kwargs)
-        logging.info(f"{test_context} → {func.__name__} abgeschlossen")
+        logging.info(f"{context} → {func.__name__} abgeschlossen")
         return result
     return wrapper
 
 
 def my_timer(func):
-    """Decorator: Misst Laufzeit (Ori Cohen Stil, aber mit Testfallmarkierung)."""
+    """Decorator: Misst Laufzeit im Ori-Cohen-Stil + Testfall-Markierung."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        test_context = get_current_testcase()
+        context = get_current_testcase()
         start = time.time()
         result = func(*args, **kwargs)
         duration = time.time() - start
         print(f"{func.__name__} ran in: {duration:.4f} sec")
-        logging.info(f"{test_context} → {func.__name__} ran in: {duration:.4f} sec")
+        logging.info(f"{context} → {func.__name__} ran in: {duration:.4f} sec")
         return result
     return wrapper
 
@@ -111,30 +110,4 @@ def evaluate_model(model, X_test, y_test):
     print("=== Schritt 3: Modellevaluierung ===")
     y_pred = model.predict(X_test)
 
-    acc = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
-
-    print(f"🎯 Genauigkeit (Accuracy): {acc:.2f}")
-    print("🧮 Confusion Matrix:")
-    print(cm)
-    print("\n📄 Klassifikationsbericht:")
-    print(report)
-
-    logging.info(f"Accuracy: {acc:.2f}")
-    logging.info(f"Confusion Matrix:\n{cm}")
-    logging.info(report)
-
-    return acc
-
-
-# ------------------------------------------------------
-# Hauptlauf (manuell ausführbar)
-# ------------------------------------------------------
-if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===")
-
-    df = load_data("advertising.csv")
-    model, X_test, y_test = train_model(df)
-    acc = evaluate_model(model, X_test, y_test)
-    print(f"🏁 Final Accuracy: {acc:.2f}")
+    acc = accuracy_score(y_test, y_pre_

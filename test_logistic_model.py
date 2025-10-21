@@ -2,7 +2,6 @@
 # Unit Tests für Logistic Regression Modell
 # Testfall 1: predict() -> Accuracy & Confusion Matrix
 # Testfall 2: fit() -> Laufzeit ≤ 120 % der Referenz
-# Ausgabe kompakt (Ori Cohen-Stil) + klare Testfall-Markierungen
 # ======================================================
 
 import unittest
@@ -10,32 +9,38 @@ import time
 import logging
 from logistic_model import load_data, train_model, evaluate_model
 
-# Zentrales Logfile (gleich wie in logistic_model.py)
+# ------------------------------------------------------
+# Logging Setup (Anhängen an das zentrale Logfile)
+# ------------------------------------------------------
 logging.basicConfig(
     filename="ml_system.log",
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(message)s",
-    filemode="a"  # an bestehende Logs anhängen
+    format="%(message)s",
+    filemode="a"
 )
 
 
 class TestLogisticRegressionModel(unittest.TestCase):
-    """Automatisierte Tests gemäß Aufgabenstellung."""
+    """Automatisierte Tests für das ML-System."""
 
     # --------------------------------------------------
-    # SETUP: Daten laden & Modell initial trainieren
+    # SETUP
     # --------------------------------------------------
     @classmethod
     def setUpClass(cls):
-        print("\n.setUpClass  Initialisiere Testumgebung und trainiere initiales Modell...")
+        print("\n===================================================")
+        print("   Starte Test-Suite für Logistic Regression Modell")
+        print("===================================================\n")
+
         logging.info("=" * 70)
-        logging.info("TESTSESSION START")
+        logging.info(">>> TESTSESSION START")
         logging.info("=" * 70)
-        logging.info("SETUP: Lade Daten und trainiere initiales Modell (für Testfall 1)")
+
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
-        print(".setUpClass completed.\n")
-        logging.info("SETUP: abgeschlossen\n")
+
+        print("Setup abgeschlossen – Modell initial trainiert.\n")
+        logging.info("SETUP abgeschlossen\n")
 
     # --------------------------------------------------
     # TESTFALL 1: Prüfung der Vorhersagefunktion predict()
@@ -44,27 +49,33 @@ class TestLogisticRegressionModel(unittest.TestCase):
         """
         Testfall 1:
         Prüft, dass die Vorhersagefunktion predict() korrekt arbeitet.
-        Indikatoren: Accuracy >= 0.9 und Confusion Matrix (wird im Logging ausgegeben).
+        Indikatoren: Accuracy >= 0.9 und Confusion Matrix (siehe Log).
         """
-        logging.info("-" * 70)
-        logging.info("TESTFALL 1 START: Prüfung der Vorhersagefunktion predict()")
-        logging.info("-" * 70)
+        print("===================================================")
+        print(" TESTFALL 1: Vorhersagefunktion (predict)")
+        print("===================================================\n")
 
-        print("Running Testfall 1: Prüfung der Vorhersagefunktion predict()")
-        t0 = time.perf_counter()
+        logging.info("=" * 70)
+        logging.info(">>> START TESTFALL 1: Vorhersagefunktion (predict)")
+        logging.info("=" * 70)
+
+        # Evaluierung starten
+        start = time.perf_counter()
         accuracy = evaluate_model(self.model, self.X_test, self.y_test)
-        dt = time.perf_counter() - t0
-        print(f".evaluate_model ran in: {dt:.4f} sec")
+        runtime = time.perf_counter() - start
 
+        print(f"evaluate_model ran in: {runtime:.4f} sec")
+        print(f"Erzielte Accuracy: {accuracy:.3f}\n")
+
+        logging.info(f"TESTFALL 1: Laufzeit evaluate_model = {runtime:.4f} sec")
         logging.info(f"TESTFALL 1: Accuracy = {accuracy:.3f}")
-        logging.info(f"TESTFALL 1: Dauer evaluate_model = {dt:.4f} sec")
 
         self.assertGreaterEqual(
             accuracy, 0.9, "Accuracy unter 0.9 – Modellvorhersage nicht ausreichend."
         )
 
+        print("Ergebnis: Testfall 1 PASSED\n")
         logging.info("TESTFALL 1 PASSED\n")
-        print("Testfall 1 PASSED\n")
 
     # --------------------------------------------------
     # TESTFALL 2: Überprüfung der Laufzeit der Trainingsfunktion fit()
@@ -75,51 +86,64 @@ class TestLogisticRegressionModel(unittest.TestCase):
         Prüft, dass die Laufzeit der Trainingsfunktion fit()
         ≤ 120 % der Referenzlaufzeit bleibt.
         """
-        logging.info("-" * 70)
-        logging.info("TESTFALL 2 START: Überprüfung der Laufzeit der Trainingsfunktion fit()")
-        logging.info("-" * 70)
+        print("===================================================")
+        print(" TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
+        print("===================================================\n")
 
-        print("Running Testfall 2: Überprüfung der Laufzeit der Trainingsfunktion fit()")
+        logging.info("=" * 70)
+        logging.info(">>> START TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
+        logging.info("=" * 70)
 
-        # Referenzlauf
+        # Referenzlaufzeit
         t0 = time.perf_counter()
         _ = train_model(self.df)
-        baseline = time.perf_counter() - t0
-        print(f".train_model (Referenzlauf) ran in: {baseline:.4f} sec")
-        logging.info(f"TESTFALL 2: Referenzlaufzeit = {baseline:.4f} sec")
+        ref_time = time.perf_counter() - t0
+        print(f"Referenzlaufzeit train_model: {ref_time:.4f} sec")
 
-        # Testlauf
-        t0 = time.perf_counter()
+        # Testlaufzeit
+        t1 = time.perf_counter()
         _ = train_model(self.df)
-        runtime = time.perf_counter() - t0
-        print(f".train_model (Testlauf) ran in: {runtime:.4f} sec")
-        logging.info(f"TESTFALL 2: Aktuelle Laufzeit = {runtime:.4f} sec")
+        test_time = time.perf_counter() - t1
+        print(f"Aktuelle Laufzeit train_model: {test_time:.4f} sec")
 
-        # Analyse
-        limit = baseline * 1.2
-        print(f".Laufzeitanalyse → Limit (120 %): {limit:.4f} sec")
-        print(f".Vergleich: aktuelle Laufzeit = {runtime:.4f} sec | Referenz = {baseline:.4f} sec\n")
-        logging.info(f"TESTFALL 2: Erlaubtes Limit (120 %) = {limit:.4f} sec")
+        # Vergleich
+        limit = ref_time * 1.2
+        print(f"Zulässiges Limit (120 %): {limit:.4f} sec\n")
+
+        print("Laufzeitanalyse:")
+        print(f" - Referenzlaufzeit : {ref_time:.4f} sec")
+        print(f" - Aktuelle Laufzeit: {test_time:.4f} sec")
+        print(f" - Erlaubtes Limit  : {limit:.4f} sec\n")
+
+        logging.info(f"TESTFALL 2: Referenzlaufzeit = {ref_time:.4f} sec")
+        logging.info(f"TESTFALL 2: Aktuelle Laufzeit = {test_time:.4f} sec")
+        logging.info(f"TESTFALL 2: Zulässiges Limit (120 %) = {limit:.4f} sec")
 
         self.assertLessEqual(
-            runtime,
+            test_time,
             limit,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({baseline:.4f}s)"
+            f"Laufzeit {test_time:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
 
+        print("Ergebnis: Testfall 2 PASSED\n")
         logging.info("TESTFALL 2 PASSED\n")
-        print("Testfall 2 PASSED\n")
 
     # --------------------------------------------------
     # TEARDOWN
     # --------------------------------------------------
     @classmethod
     def tearDownClass(cls):
+        print("===================================================")
+        print("   Alle Testfälle erfolgreich abgeschlossen.")
+        print("===================================================\n")
+
         logging.info("=" * 70)
-        logging.info("TESTSESSION ENDE")
+        logging.info(">>> TESTSESSION ENDE")
         logging.info("=" * 70)
-        print(".tearDownClass  Alle Testfälle abgeschlossen.\n")
 
 
+# ------------------------------------------------------
+# Testausführung
+# ------------------------------------------------------
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)
