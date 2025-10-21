@@ -20,7 +20,6 @@ class TestLogisticModel(unittest.TestCase):
         start = time.time()
         _ = train_model(self.df)
         ref_time = time.time() - start
-
         start = time.time()
         _ = train_model(self.df)
         runtime = time.time() - start

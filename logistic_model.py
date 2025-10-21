@@ -17,7 +17,6 @@ from functools import wraps
 def my_logger(func):
     import logging
     logging.basicConfig(filename=f"{func.__name__}.log", level=logging.INFO)
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         logging.info(f"Ran with args: {args}, and kwargs: {kwargs}")
@@ -27,7 +26,6 @@ def my_logger(func):
 
 def my_timer(func):
     import time
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         t1 = time.time()
