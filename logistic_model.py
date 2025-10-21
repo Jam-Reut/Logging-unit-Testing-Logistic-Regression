@@ -1,6 +1,6 @@
 # ======================================================
 # Logistic Regression Pipeline
-# Ori Cohen Decorator Stil, aber mit bestehender Ausgabe
+# Ori Cohen Decorator Stil + Testfall-Markierungen im Logging
 # ======================================================
 
 from functools import wraps
@@ -12,7 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # ------------------------------------------------------
-# Logging Setup (einheitlich für alle Funktionen)
+# Logging Setup (zentral für alle Funktionen)
 # ------------------------------------------------------
 logging.basicConfig(
     filename="ml_system.log",
@@ -22,35 +22,52 @@ logging.basicConfig(
 )
 
 # ------------------------------------------------------
-# Decorators (Ori Cohen Stil, aber angepasst)
+# Hilfsfunktion: Aktiven Testfall erkennen
+# ------------------------------------------------------
+import inspect
+
+def get_current_testcase():
+    """Erkennt automatisch, ob Testfall 1 oder 2 aktiv ist."""
+    for frame in inspect.stack():
+        if "test_predict" in frame.function or "test_predict_function" in frame.function:
+            return "TESTFALL 1 (Vorhersage)"
+        if "test_fit_runtime" in frame.function:
+            return "TESTFALL 2 (Laufzeit)"
+    return "MANUELLER LAUF"
+
+# ------------------------------------------------------
+# Decorators (Ori Cohen Stil + Testfall Logging)
 # ------------------------------------------------------
 def my_logger(func):
-    """Decorator: Loggt Funktionsaufrufe & Parameter."""
+    """Decorator: Loggt Funktionsaufrufe mit Testfall-Kontext."""
     @wraps(func)
     def wrapper(*args, **kwargs):
+        test_context = get_current_testcase()
+        logging.info("=" * 70)
+        logging.info(f"{test_context} → {func.__name__} gestartet")
         logging.info(f"Running: {func.__name__} | args={args} | kwargs={kwargs}")
         result = func(*args, **kwargs)
-        logging.info(f"Completed: {func.__name__}")
+        logging.info(f"{test_context} → {func.__name__} abgeschlossen")
         return result
     return wrapper
 
 
 def my_timer(func):
-    """Decorator: Misst und gibt Laufzeit aus (Ori Cohen Stil)."""
+    """Decorator: Misst Laufzeit (Ori Cohen Stil, aber mit Testfallmarkierung)."""
     @wraps(func)
     def wrapper(*args, **kwargs):
+        test_context = get_current_testcase()
         start = time.time()
         result = func(*args, **kwargs)
         duration = time.time() - start
-        # Ori Cohen Stil – aber Format bleibt wie dein bisheriges Output
         print(f"{func.__name__} ran in: {duration:.4f} sec")
-        logging.info(f"{func.__name__} ran in: {duration:.4f} sec")
+        logging.info(f"{test_context} → {func.__name__} ran in: {duration:.4f} sec")
         return result
     return wrapper
 
 
 # ------------------------------------------------------
-# ML-Funktionen mit Ori Cohen Decorators
+# ML-Funktionen mit Decorators
 # ------------------------------------------------------
 @my_logger
 @my_timer
@@ -112,7 +129,7 @@ def evaluate_model(model, X_test, y_test):
 
 
 # ------------------------------------------------------
-# Hauptlauf (zum manuellen Testen)
+# Hauptlauf (manuell ausführbar)
 # ------------------------------------------------------
 if __name__ == "__main__":
     print("=== Starte logistic_model.py ===")
