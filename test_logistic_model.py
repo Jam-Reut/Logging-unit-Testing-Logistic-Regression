@@ -42,17 +42,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         limit = ref_time * 1.2  # 120 % Toleranz
 
-        print("\n=== Laufzeit-Analyse ===")
-        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
-        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
-
         self.assertLessEqual(
             runtime,
             limit,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
         print("Ergebnis: TESTFALL 2 PASSED\n")
+		
+		print("\n=== Laufzeit-Analyse ===")
+        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
+        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
+        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
 
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)
