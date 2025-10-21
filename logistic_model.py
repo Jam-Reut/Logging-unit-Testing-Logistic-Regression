@@ -1,74 +1,70 @@
-"""
-logistic_model.py
------------------
-Trainings- und Evaluationspipeline für ein Logistic Regression Modell.
-Implementiert nach dem Ansatz von Ori Cohen (Logging + Timing).
-"""
-
-from functools import wraps
-import logging
-import time
+# logistic_model.py
 import pandas as pd
+import numpy as np
+import time
+from functools import wraps
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# ======================================================
-# LOGGING EINSTELLUNG
-# ======================================================
-logging.basicConfig(
-    filename="logistic_model.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    filemode="w"
-)
-
-# ======================================================
-# DECORATORS
-# ======================================================
+# ==============================================
+# Decorators (nach Ori Cohen)
+# ==============================================
 def my_logger(func):
-    """Decorator: Loggt Funktionsaufrufe mit Parametern."""
+    import logging
+    logging.basicConfig(filename=f"{func.__name__}.log", level=logging.INFO)
+
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.info(f"Running: {func.__name__} | args={args} | kwargs={kwargs}")
+        logging.info(f"Aufruf: {func.__name__} | args={args} | kwargs={kwargs}")
         result = func(*args, **kwargs)
-        logging.info(f"Completed: {func.__name__}")
+        logging.info(f"Beendet: {func.__name__}")
         return result
     return wrapper
 
 
 def my_timer(func):
-    """Decorator: Misst Laufzeit der Funktion."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        start = time.perf_counter()
+        start_time = time.time()
         result = func(*args, **kwargs)
-        duration = time.perf_counter() - start
-        print(f"TEST → {func.__name__} ran in: {duration:.4f} sec")
+        elapsed = time.time() - start_time
+        print(f"→ {func.__name__} ran in: {elapsed:.4f} sec")
+        _timing_log[func.__name__] = elapsed
         return result
     return wrapper
 
 
-# ======================================================
-# MODELFUNKTIONEN
-# ======================================================
+# ==============================================
+# Globale Variablen für Timing
+# ==============================================
+_timing_log = {}
+
+
+def get_last_timing(func_name):
+    return _timing_log.get(func_name, None)
+
+
+# ==============================================
+# Pipeline-Funktionen
+# ==============================================
 @my_logger
 @my_timer
-def load_data(filename):
-    print(f"\n=== Schritt 1: Lade Datensatz ===")
-    df = pd.read_csv(filename)
-    print(f"  Datei: {filename} | Shape: {df.shape}")
+def load_data(file_path):
+    print("\n=== Datensatz laden ===")
+    df = pd.read_csv(file_path)
+    print(f"  Datei: {file_path} | Shape: {df.shape}")
     return df
 
 
 @my_logger
 @my_timer
 def train_model(df):
-    print(f"\n=== Schritt 2: Trainiere Modell ===")
+    print("\n=== Modelltraining ===")
     X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
     y = df['Clicked on Ad']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
     print("  Modelltraining abgeschlossen.")
@@ -78,32 +74,28 @@ def train_model(df):
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-    print(f"\n=== Schritt 3: Modellevaluierung ===")
+    print("\n=== Modellevaluierung ===")
     y_pred = model.predict(X_test)
+
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    report = classification_report(y_test, y_pred, digits=2)
+    report = classification_report(y_test, y_pred)
 
     print(f"  Genauigkeit (Accuracy): {acc:.2f}")
     print("  Confusion Matrix:")
-    for row in cm:
-        print(f"    {row}")
-
+    print(f"    {cm}")
     print("\n  Klassifikationsbericht (Auszug):")
-    for line in report.strip().split("\n")[2:]:
-        print("   ", line)
-    print()
+    print(report)
     return acc
 
 
-# ======================================================
-# PIPELINE AUSFÜHRUNG
-# ======================================================
+# ==============================================
+# Hauptlauf
+# ==============================================
 if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===")
+    print("\n=== Starte logistic_model.py ===")
 
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
-    acc = evaluate_model(model, X_test, y_test)
-
-    print(f"Final Accuracy: {acc:.2f}\n")
+    accuracy = evaluate_model(model, X_test, y_test)
+    print(f"Final Accuracy: {accuracy:.2f}\n")
