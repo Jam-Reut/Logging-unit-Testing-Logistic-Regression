@@ -19,7 +19,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print(" Setup initial trainieren\n")
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
-        print("\n  Setup abgeschlossen\n")
+        print("  Setup abgeschlossen\n")
 
     # --------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
@@ -31,7 +31,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         accuracy = evaluate_model(self.model, self.X_test, self.y_test)
         runtime = time.perf_counter() - start
 
-        print(f"\n  → evaluate_model ran in: {runtime:.4f} sec\n")
+        print(f"  → evaluate_model ran in: {runtime:.4f} sec\n")
         print(f"  Accuracy: {accuracy:.3f}\n")
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy unter 0.9")
         print("Ergebnis: Testfall 1 PASSED\n")
@@ -54,7 +54,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         limit = ref_time * 1.2
 
-        print("\n=== Laufzeit-Analyse ===")
+        print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit (erster Trainingslauf): {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit (zweiter Trainingslauf): {test_time:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")

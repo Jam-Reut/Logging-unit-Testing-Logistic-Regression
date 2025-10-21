@@ -84,13 +84,17 @@ def evaluate_model(model, X_test, y_test):
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred, digits=2)
+
     print(f"  Genauigkeit (Accuracy): {acc:.2f}\n")
     print("  Confusion Matrix:")
     for row in cm:
         print(f"    {row}")
+
     print("\n  Klassifikationsbericht (Auszug):")
     for line in report.strip().split("\n")[2:]:
         print("   ", line)
+
+    print()  # genau eine Leerzeile nach Bericht
     return acc
 
 
@@ -107,4 +111,4 @@ if __name__ == "__main__":
 
     acc = evaluate_model(model, X_test, y_test)
 
-    print(f"\nFinal Accuracy: {acc:.2f}\n")
+    print(f"Final Accuracy: {acc:.2f}\n")
