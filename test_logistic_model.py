@@ -20,9 +20,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # --------------------------------------------------
     @classmethod
     def setUpClass(cls):
-        print("\n=== Starte Unit-Tests: test_logistic_model.py ===\n")
         print("Setup initial trainieren\n")
-
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
 
@@ -34,11 +32,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
     def test_1_predict_function(self):
         """Testfall 1: Accuracy ≥ 0.9 und Confusion Matrix vorhanden."""
         print("=== Testfall 1: Vorhersagefunktion (predict) ===\n")
-
         start = time.perf_counter()
         accuracy = evaluate_model(self.model, self.X_test, self.y_test)
         runtime = time.perf_counter() - start
-
         print(f"  → evaluate_model ran in: {runtime:.4f} sec")
         print(f"  Accuracy: {accuracy:.3f}\n")
 
