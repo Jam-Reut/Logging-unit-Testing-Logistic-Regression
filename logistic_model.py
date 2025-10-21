@@ -20,12 +20,12 @@ from functools import wraps
 
 def my_logger(func):
 import logging
-logging.basicConfig(filename='{}.log'.format(func.**name**), level=logging.INFO)
+logging.basicConfig(filename="{}.log".format(func.**name**), level=logging.INFO)
 
 ```
 @wraps(func)
 def wrapper(*args, **kwargs):
-    logging.info('Ran with args: {}, and kwargs: {}'.format(args, kwargs))
+    logging.info("Ran with args: {}, and kwargs: {}".format(args, kwargs))
     return func(*args, **kwargs)
 
 return wrapper
@@ -40,7 +40,7 @@ def wrapper(*args, **kwargs):
     t1 = time.time()
     result = func(*args, **kwargs)
     t2 = time.time() - t1
-    print('{} ran in: {} sec'.format(func.__name__, t2))
+    print("{} ran in: {} sec".format(func.__name__, t2))
     return result
 
 return wrapper
@@ -73,13 +73,4 @@ return model, X_test, y_test
 def evaluate_model(model, X_test, y_test):
 y_pred = model.predict(X_test)
 acc = accuracy_score(y_test, y_pred)
-cm = confusion_matrix(y_test, y_pred)
-logging.info(f"Accuracy: {acc:.2f}")
-logging.info(f"Confusion Matrix:\n{cm}")
-return acc
-
-if **name** == "**main**":
-df = load_data("advertising.csv")
-model, X_test, y_test = train_model(df)
-accuracy = evaluate_model(model, X_test, y_test)
-print(f"Accuracy: {accuracy:.2f}")
+cm = confusion_matrix(_
