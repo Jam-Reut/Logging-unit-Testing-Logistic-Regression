@@ -5,7 +5,7 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 class TestLogisticRegressionModel(unittest.TestCase):
 
     def setUp(self):
-        print("\n=== Starte Unit-Tests: test_logistic_model.py ===")
+        #print("\n=== Starte Unit-Tests: test_logistic_model.py ===")
         print("Setup initiales Training wird ausgeführt...\n")
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
@@ -43,10 +43,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         limit = ref_time * 1.2  # 120 % Toleranz
 
-        print("\n=== Laufzeit-Analyse ===")
-        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
-        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
+        
 
         self.assertLessEqual(
             runtime,
@@ -54,6 +51,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
         print("Ergebnis: TESTFALL 2 PASSED\n")
+		
+		print("\n=== Laufzeit-Analyse ===")
+        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
+        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
+        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
 
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)
