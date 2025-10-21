@@ -4,7 +4,7 @@ from logistic_model import load_data, train_model, evaluate_model
 
 class TestLogisticModel(unittest.TestCase):
 
-```
+
 def setUp(self):
     # Testdaten laden
     self.df = load_data("advertising.csv")
@@ -35,7 +35,7 @@ def test_fit_runtime(self):
         ref_time * 1.2,
         f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
     )
-```
+
 
 if **name** == "__main__":
 unittest.main(argv=[""], exit=False)

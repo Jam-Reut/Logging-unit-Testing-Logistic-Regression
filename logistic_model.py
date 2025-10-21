@@ -22,19 +22,18 @@ def my_logger(func):
 import logging
 logging.basicConfig(filename="{}.log".format(func.**name**), level=logging.INFO)
 
-```
+
 @wraps(func)
 def wrapper(*args, **kwargs):
     logging.info("Ran with args: {}, and kwargs: {}".format(args, kwargs))
     return func(*args, **kwargs)
 
 return wrapper
-```
+
 
 def my_timer(func):
 import time
 
-```
 @wraps(func)
 def wrapper(*args, **kwargs):
     t1 = time.time()
@@ -44,7 +43,6 @@ def wrapper(*args, **kwargs):
     return result
 
 return wrapper
-```
 
 def get_last_timing(func_name: str):
 return __timings.get(func_name)
