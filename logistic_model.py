@@ -7,13 +7,17 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 
-# Logging-Konfiguration
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
+# ===========================================
+# Decorators (nach Medium-Artikel)
+# ===========================================
 
 def my_logger(func):
-    import logging
-    logging.basicConfig(filename=f"{func.__name__}.log", level=logging.INFO)
+    """Decorator: loggt Funktionsaufruf und Parameter in eine Logdatei."""
+    logging.basicConfig(
+        filename=f"{func.__name__}.log",
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -23,8 +27,7 @@ def my_logger(func):
 
 
 def my_timer(func):
-    import time
-
+    """Decorator: misst und gibt die Laufzeit einer Funktion aus."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         t1 = time.time()
@@ -34,6 +37,10 @@ def my_timer(func):
         return result
     return wrapper
 
+
+# ===========================================
+# ML Workflow: Daten laden, trainieren, evaluieren
+# ===========================================
 
 @my_logger
 @my_timer
@@ -47,9 +54,12 @@ def load_data(file_path: str):
 @my_logger
 @my_timer
 def train_model(df):
+    """Trainiert ein logistisches Regressionsmodell und gibt Modell + Testdaten zurück."""
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42
+    )
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
     logging.info("Training abgeschlossen")
@@ -59,16 +69,18 @@ def train_model(df):
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
+    """Berechnet Accuracy und Confusion Matrix."""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     logging.info(f"Accuracy: {acc:.2f}")
     logging.info(f"Confusion Matrix:\n{cm}")
-    return acc
+    print(f"Accuracy: {acc:.2f}")
+    print("Confusion Matrix:\n", cm)
+    return acc, cm
 
 
 if __name__ == "__main__":
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
-    accuracy = evaluate_model(model, X_test, y_test)
-    print(f"Accuracy: {accuracy:.2f}")
+    acc, cm = evaluate_model(model, X_
