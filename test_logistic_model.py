@@ -1,8 +1,16 @@
+# ======================================================
+# UNIT TESTS für Logistic Regression Modell
+# ======================================================
+
 import unittest
 import time
 import logging
 from logistic_model import load_data, train_model, evaluate_model
 
+
+# ------------------------------------------------------
+# LOGGING (Anhängen an zentrales Logfile)
+# ------------------------------------------------------
 logging.basicConfig(
     filename="ml_system.log",
     level=logging.INFO,
@@ -10,9 +18,13 @@ logging.basicConfig(
     filemode="a"
 )
 
-class TestLogisticRegressionModel(unittest.TestCase):
-    """Unit Tests für ML-System mit YAML-artiger Konsolenausgabe."""
 
+class TestLogisticRegressionModel(unittest.TestCase):
+    """Automatisierte Tests für das ML-System."""
+
+    # --------------------------------------------------
+    # SETUP (einmalig für alle Tests)
+    # --------------------------------------------------
     @classmethod
     def setUpClass(cls):
         print("# ======================================================")
@@ -26,29 +38,50 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         print("Setup abgeschlossen – Modell initial trainiert.\n")
 
-    def test_fit_runtime(self):
-        """Testfall 2: Laufzeit ≤ 120 % der Referenz."""
-        print("Testfall 2: Laufzeit der Trainingsfunktion (fit)")
-        print("--------------------------------------------------")
+    # --------------------------------------------------
+    # TESTFALL 1: Vorhersagefunktion (predict)
+    # --------------------------------------------------
+    def test_1_predict_function(self):
+        """Testfall 1: Accuracy ≥ 0.9 und Confusion Matrix vorhanden."""
+        print("=== Testfall 1: Vorhersagefunktion (predict) ===")
+        start = time.perf_counter()
 
+        accuracy = evaluate_model(self.model, self.X_test, self.y_test)
+        runtime = time.perf_counter() - start
+
+        print(f"  → evaluate_model ran in: {runtime:.4f} sec")
+        print(f"  Accuracy: {accuracy:.3f}\n")
+
+        self.assertGreaterEqual(
+            accuracy, 0.9, "Accuracy unter 0.9 – Modellvorhersage nicht ausreichend."
+        )
+
+        print("  ✅ Ergebnis: Testfall 1 PASSED\n")
+
+    # --------------------------------------------------
+    # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
+    # --------------------------------------------------
+    def test_2_fit_runtime(self):
+        """Testfall 2: Laufzeit ≤ 120 % der Referenz."""
+        print("=== Testfall 2: Laufzeit der Trainingsfunktion (fit) ===")
+
+        # 1️⃣ Referenzlaufzeit (erster Trainingslauf)
         t0 = time.perf_counter()
         _ = train_model(self.df)
         ref_time = time.perf_counter() - t0
 
+        # 2️⃣ Testlaufzeit (zweiter Trainingslauf)
         t1 = time.perf_counter()
         _ = train_model(self.df)
         test_time = time.perf_counter() - t1
 
+        # 3️⃣ Vergleich mit 120%-Grenze
         limit = ref_time * 1.2
 
-        print(f"  Referenzlaufzeit train_model: {ref_time:.4f} sec")
-        print(f"  Aktuelle Laufzeit train_model: {test_time:.4f} sec")
-        print(f"  Zulässiges Limit (120 %): {limit:.4f} sec\n")
-
-        print("  Laufzeitanalyse:")
-        print(f"    - Referenzlaufzeit : {ref_time:.4f} sec")
-        print(f"    - Aktuelle Laufzeit: {test_time:.4f} sec")
-        print(f"    - Erlaubtes Limit  : {limit:.4f} sec\n")
+        print(f"\n=== Laufzeit-Analyse ===")
+        print(f"  Referenzlaufzeit (erster Trainingslauf): {ref_time:.4f} sec")
+        print(f"  Aktuelle Laufzeit (zweiter Trainingslauf): {test_time:.4f} sec")
+        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
 
         self.assertLessEqual(
             test_time,
@@ -58,28 +91,19 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         print("  ✅ Ergebnis: Testfall 2 PASSED\n")
 
-    def test_predict_function(self):
-        """Testfall 1: Accuracy ≥ 0.9 und Confusion Matrix vorhanden."""
-        print("Testfall 1: Vorhersagefunktion (predict)")
-        print("--------------------------------------------------")
-
-        start = time.perf_counter()
-        accuracy = evaluate_model(self.model, self.X_test, self.y_test)
-        runtime = time.perf_counter() - start
-
-        print(f"  → evaluate_model ran in: {runtime:.4f} sec")
-        print(f"  🎯 Accuracy: {accuracy:.3f}\n")
-        self.assertGreaterEqual(accuracy, 0.9, "Accuracy unter 0.9")
-        print("  ✅ Ergebnis: Testfall 1 PASSED\n")
-
+    # --------------------------------------------------
+    # TEARDOWN (am Ende der Tests)
+    # --------------------------------------------------
     @classmethod
     def tearDownClass(cls):
-        print("Test-Suite Ende:")
-        print("  Alle Testfälle abgeschlossen.\n")
-
         print("# ======================================================")
         print("# TESTERGEBNISSE")
         print("# ======================================================\n")
+        print("Alle Testfälle abgeschlossen.\n")
 
+
+# ------------------------------------------------------
+# TESTAUSFÜHRUNG
+# ------------------------------------------------------
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)

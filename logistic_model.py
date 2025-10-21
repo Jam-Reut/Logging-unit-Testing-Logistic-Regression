@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 
 
 # ======================================================
-# LOGGING (Ori Cohen Stil)
+# LOGGING SETUP
 # ======================================================
 logging.basicConfig(
     filename="ml_system.log",
@@ -20,13 +20,13 @@ logging.basicConfig(
 
 
 # ------------------------------------------------------
-# Testfall-Erkennung
+# Testfall-Erkennung (für Logging-Kontext)
 # ------------------------------------------------------
 def get_current_testcase():
     for frame in inspect.stack():
-        if "test_predict" in frame.function:
+        if "test_predict" in frame.function or "test_1_predict_function" in frame.function:
             return "TESTFALL 1 (Vorhersage)"
-        if "test_fit_runtime" in frame.function:
+        if "test_fit_runtime" in frame.function or "test_2_fit_runtime" in frame.function:
             return "TESTFALL 2 (Laufzeit)"
     return "MANUELLER LAUF"
 
@@ -59,14 +59,14 @@ def my_timer(func):
 
 
 # ======================================================
-# FUNKTIONEN MIT KOMPAKTER, GEORDNETER AUSGABE
+# FUNKTIONEN (sauber formatierte Ausgabe)
 # ======================================================
 
 @my_logger
 @my_timer
 def load_data(filename):
     """Lädt den CSV-Datensatz."""
-    print("\nSchritt 1: Lade Datensatz")
+    print("=== Schritt 1: Lade Datensatz ===")
     df = pd.read_csv(filename)
     print(f"  Datei: {filename}")
     print(f"  Form: {df.shape[0]} Zeilen × {df.shape[1]} Spalten")
@@ -77,7 +77,7 @@ def load_data(filename):
 @my_timer
 def train_model(df):
     """Trainiert das Modell."""
-    print("\nSchritt 2: Trainiere Modell")
+    print("=== Schritt 2: Trainiere Modell ===")
     X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
     y = df['Clicked on Ad']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -92,12 +92,12 @@ def train_model(df):
 @my_timer
 def evaluate_model(model, X_test, y_test):
     """Bewertet das Modell."""
-    print("\nSchritt 3: Modellevaluierung")
+    print("=== Schritt 3: Modellevaluierung ===")
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred, digits=2)
-    print(f"  Accuracy: {acc:.2f}")
+    print(f"  Genauigkeit (Accuracy): {acc:.2f}")
     print("  Confusion Matrix:")
     for row in cm:
         print(f"    {row}")
@@ -108,15 +108,37 @@ def evaluate_model(model, X_test, y_test):
 
 
 # ======================================================
-# MAIN AUSFÜHRUNG (YAML-Stil, reduziert und klar)
+# PIPELINE-AUSFÜHRUNG (mit Laufzeitanalyse)
 # ======================================================
 if __name__ == "__main__":
     print("# ======================================================")
     print("# AUSFÜHRUNG DER PIPELINE (logistic_model.py)")
     print("# ======================================================\n")
 
+    # Schritt 1: Daten laden
     df = load_data("advertising.csv")
+    print("")  # gleichmäßiger Abstand
+
+    # Schritt 2: Trainingsläufe (2x für Laufzeitanalyse)
+    t1 = time.perf_counter()
     model, X_test, y_test = train_model(df)
+    ref_time = time.perf_counter() - t1
+    print("")
+
+    t2 = time.perf_counter()
+    _ = train_model(df)
+    test_time = time.perf_counter() - t2
+    print("")
+
+    # Schritt 3: Modellevaluierung
     acc = evaluate_model(model, X_test, y_test)
 
+    # Laufzeitanalyse — jetzt am Ende
+    print("\n=== Laufzeit-Analyse ===")
+    limit = ref_time * 1.2
+    print(f"  Referenzlaufzeit (erster Trainingslauf): {ref_time:.4f} sec")
+    print(f"  Aktuelle Laufzeit (zweiter Trainingslauf): {test_time:.4f} sec")
+    print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
+
+    # Finale Metrik
     print(f"\n🏁 Final Accuracy: {acc:.2f}\n")
