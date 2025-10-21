@@ -55,6 +55,12 @@ class TestLogisticModel(unittest.TestCase):
         limit = baseline * 1.2
         logging.info(f"Erlaubtes Limit (120 %): {limit:.4f} sec")
 
+        # ➕ Ausgabe in der Konsole (zur besseren Nachvollziehbarkeit)
+        print("\n=== Laufzeit-Analyse ===")
+        print(f"Referenzlaufzeit (erster Trainingslauf): {baseline:.4f} sec")
+        print(f"Aktuelle Laufzeit (zweiter Trainingslauf): {runtime:.4f} sec")
+        print(f"Erlaubtes Limit (120 %): {limit:.4f} sec\n")
+
         self.assertLessEqual(
             runtime,
             limit,
