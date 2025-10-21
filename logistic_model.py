@@ -1,3 +1,10 @@
+"""
+logistic_model.py
+-----------------
+Pipeline zur Ausführung eines einfachen Logistic-Regression-Modells
+inklusive Logging und Zeitmessung (nach Ori Cohen).
+"""
+
 from functools import wraps
 import logging
 import time
@@ -20,7 +27,7 @@ logging.basicConfig(
 
 
 # ------------------------------------------------------
-# Testfall-Erkennung (für Logging-Kontext)
+# Testfall-Erkennung (ermöglicht Logging im Kontext)
 # ------------------------------------------------------
 def get_current_testcase():
     for frame in inspect.stack():
@@ -32,13 +39,13 @@ def get_current_testcase():
 
 
 # ------------------------------------------------------
-# Decorators (Ori Cohen Stil)
+# Decorators: Logging und Zeitmessung (nach Ori Cohen)
 # ------------------------------------------------------
 def my_logger(func):
+    """Decorator: schreibt Funktionsaufrufe ins Logfile."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         context = get_current_testcase()
-        logging.info("=" * 70)
         logging.info(f"{context} → {func.__name__} gestartet")
         result = func(*args, **kwargs)
         logging.info(f"{context} → {func.__name__} abgeschlossen")
@@ -47,6 +54,7 @@ def my_logger(func):
 
 
 def my_timer(func):
+    """Decorator: misst Laufzeit einer Funktion."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -59,29 +67,27 @@ def my_timer(func):
 
 
 # ======================================================
-# FUNKTIONEN (sauber formatierte Ausgabe)
+# FUNKTIONEN DER PIPELINE
 # ======================================================
 
 @my_logger
 @my_timer
 def load_data(filename):
-    """Lädt den CSV-Datensatz."""
-    print("=== Schritt 1: Lade Datensatz ===")
+    """Schritt 1: Daten laden."""
+    print("\n=== Schritt 1: Lade Datensatz ===")
     df = pd.read_csv(filename)
     print(f"  Datei: {filename}")
-    print(f"  Form: {df.shape[0]} Zeilen × {df.shape[1]} Spalten")
     return df
 
 
 @my_logger
 @my_timer
 def train_model(df):
-    """Trainiert das Modell."""
-    print("=== Schritt 2: Trainiere Modell ===")
+    """Schritt 2: Modell trainieren."""
+    print("\n=== Schritt 2: Trainiere Modell ===")
     X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
     y = df['Clicked on Ad']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    print(f"  Trainingsgröße: {X_train.shape[0]} | Testgröße: {X_test.shape[0]}")
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
     print("  Modelltraining abgeschlossen.")
@@ -91,54 +97,37 @@ def train_model(df):
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-    """Bewertet das Modell."""
-    print("=== Schritt 3: Modellevaluierung ===")
+    """Schritt 3: Modell evaluieren."""
+    print("\n=== Schritt 3: Modellevaluierung ===")
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred, digits=2)
-    print(f"  Genauigkeit (Accuracy): {acc:.2f}")
+    print(f"  Genauigkeit (Accuracy): {acc:.2f}\n")
     print("  Confusion Matrix:")
     for row in cm:
         print(f"    {row}")
-    print("  Klassifikationsbericht (Auszug):")
+    print("\n  Klassifikationsbericht (Auszug):")
     for line in report.strip().split("\n")[2:]:
         print("   ", line)
     return acc
 
 
 # ======================================================
-# PIPELINE-AUSFÜHRUNG (mit Laufzeitanalyse)
+# PIPELINE-AUSFÜHRUNG (ohne Laufzeitanalyse)
 # ======================================================
 if __name__ == "__main__":
-    print("# ======================================================")
-    print("# AUSFÜHRUNG DER PIPELINE (logistic_model.py)")
-    print("# ======================================================\n")
+    print("=== Starte logistic_model.py ===")
 
     # Schritt 1: Daten laden
     df = load_data("advertising.csv")
-    print("")  # gleichmäßiger Abstand
 
-    # Schritt 2: Trainingsläufe (2x für Laufzeitanalyse)
-    t1 = time.perf_counter()
+    # Schritt 2: Zwei Trainingsdurchläufe (zur Demonstration)
     model, X_test, y_test = train_model(df)
-    ref_time = time.perf_counter() - t1
-    print("")
-
-    t2 = time.perf_counter()
     _ = train_model(df)
-    test_time = time.perf_counter() - t2
-    print("")
 
     # Schritt 3: Modellevaluierung
     acc = evaluate_model(model, X_test, y_test)
 
-    # Laufzeitanalyse — jetzt am Ende
-    print("\n=== Laufzeit-Analyse ===")
-    limit = ref_time * 1.2
-    print(f"  Referenzlaufzeit (erster Trainingslauf): {ref_time:.4f} sec")
-    print(f"  Aktuelle Laufzeit (zweiter Trainingslauf): {test_time:.4f} sec")
-    print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
-
-    # Finale Metrik
-    print(f"\n🏁 Final Accuracy: {acc:.2f}\n")
+    # Finale Ausgabe
+    print(f"\nFinal Accuracy: {acc:.2f}\n")
