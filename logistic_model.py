@@ -1,6 +1,7 @@
 # ======================================================
-# Logistic Regression Example (extended logging version)
-# Based on Ori Cohen's article + assignment requirements
+# Logistic Regression Example
+# Ori Cohen–style logging & timing decorators
+# Matching assignment requirements (predict & fit tests)
 # ======================================================
 
 import logging
@@ -13,27 +14,21 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 
 
 # ======================================================
-# Logging Configuration
-# ======================================================
-logging.basicConfig(
-    filename="ml_pipeline.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-
-# ======================================================
-# Decorators (enhanced with detailed logging)
+# Decorators (as in Ori Cohen's article)
 # ======================================================
 def my_logger(func):
-    """Logs call details, arguments and results in detail."""
+    """Logs each function call to a separate logfile."""
+    logging.basicConfig(
+        filename=f"{func.__name__}.log",
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logging.info(f"▶️ Start function '{func.__name__}'")
-        logging.info(f"    Args: {args}")
-        logging.info(f"    Kwargs: {kwargs}")
+        logging.info(f"▶️ Running '{func.__name__}' with args={args}, kwargs={kwargs}")
         result = func(*args, **kwargs)
-        logging.info(f"✅ End function '{func.__name__}'")
+        logging.info(f"✅ Finished '{func.__name__}' successfully.")
         return result
     return wrapper
 
@@ -42,21 +37,22 @@ def my_timer(func):
     """Measures runtime, prints and logs it."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        start = time.time()
+        start = time.perf_counter()
         result = func(*args, **kwargs)
-        runtime = time.time() - start
-        print(f"{func.__name__} ran in: {runtime:.4f} sec")
-        logging.info(f"⏱ '{func.__name__}' ran in {runtime:.4f} sec")
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} ran in: {elapsed:.4f} sec")
+        logging.info(f"⏱ '{func.__name__}' executed in {elapsed:.4f} sec")
         return result
     return wrapper
 
 
 # ======================================================
-# Machine Learning Workflow
+# ML Workflow
 # ======================================================
 @my_logger
 @my_timer
 def load_data(file_path: str):
+    """Load dataset and log metadata."""
     df = pd.read_csv(file_path)
     logging.info(f"📂 Data loaded from {file_path} with shape {df.shape}")
     logging.info(f"Columns: {list(df.columns)}")
@@ -66,29 +62,23 @@ def load_data(file_path: str):
 @my_logger
 @my_timer
 def train_model(df):
-    """Train logistic regression and return model/test sets."""
-    X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
-    y = df["Clicked on Ad"]
-
-    logging.info("Preparing train/test split (70/30)...")
+    """Train logistic regression model."""
+    X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
+    y = df['Clicked on Ad']
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, random_state=42
     )
-
     model = LogisticRegression(max_iter=1000)
-    logging.info("Fitting Logistic Regression model...")
     model.fit(X_train, y_train)
-
-    score = model.score(X_test, y_test)
-    logging.info(f"Training completed. Model score on test set: {score:.3f}")
-    logging.info("Training samples: %d | Test samples: %d", len(X_train), len(X_test))
+    logging.info("Training completed.")
+    logging.info(f"Training samples: {len(X_train)}, Test samples: {len(X_test)}")
     return model, X_test, y_test
 
 
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-    """Evaluate model and log full performance report."""
+    """Evaluate model with accuracy and confusion matrix."""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
@@ -97,15 +87,15 @@ def evaluate_model(model, X_test, y_test):
     print(f"Accuracy: {acc:.2f}")
     print("Confusion Matrix:\n", cm)
 
-    logging.info(f"📊 Evaluation metrics for model '{type(model).__name__}':")
+    logging.info(f"📊 Model Evaluation:")
     logging.info(f"Accuracy: {acc:.3f}")
     logging.info(f"Confusion Matrix:\n{cm}")
-    logging.info("Detailed Classification Report:\n" + report)
-
-    return acc, cm
+    logging.info("Classification Report:\n" + report)
+    return acc
 
 
 if __name__ == "__main__":
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
-    acc, cm = evaluate_model(model, X_test, y_test)
+    accuracy = evaluate_model(model, X_test, y_test)
+    print(f"Final Accuracy: {accuracy:.2f}")
