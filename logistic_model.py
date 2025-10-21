@@ -110,4 +110,29 @@ def evaluate_model(model, X_test, y_test):
     print("=== Schritt 3: Modellevaluierung ===")
     y_pred = model.predict(X_test)
 
-    acc = accuracy_score(y_test, y_pre_
+    acc = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+
+    print(f"🎯 Genauigkeit (Accuracy): {acc:.2f}")
+    print("🧮 Confusion Matrix:")
+    print(cm)
+    print("\n📄 Klassifikationsbericht:")
+    print(report)
+
+    logging.info(f"Accuracy: {acc:.2f}")
+    logging.info("Confusion Matrix:")
+    logging.info(cm)
+    logging.info(report)
+    return acc
+
+
+# ------------------------------------------------------
+# Hauptlauf (manuell ausführbar)
+# ------------------------------------------------------
+if __name__ == "__main__":
+    print("=== Starte logistic_model.py ===")
+    df = load_data("advertising.csv")
+    model, X_test, y_test = train_model(df)
+    acc = evaluate_model(model, X_test, y_test)
+    print(f"🏁 Final Accuracy: {acc:.2f}")
