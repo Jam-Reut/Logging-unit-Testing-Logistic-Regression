@@ -93,6 +93,7 @@ def evaluate_model(model, X_test, y_test):
 # ==============================================
 if __name__ == "__main__":
     #print("\n=== Starte logistic_model.py ===")
+
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
     accuracy = evaluate_model(model, X_test, y_test)
