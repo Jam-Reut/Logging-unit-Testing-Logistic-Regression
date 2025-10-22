@@ -36,13 +36,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         df = load_data("advertising.csv")
         # Referenzlauf
-        print("=== Modelltraining (Referenzlauf) ===")
+        #print("=== Modelltraining (Referenzlauf) ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
         print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
-        print("=== Modelltraining (Testlauf) ===")
+        #print("=== Modelltraining (Testlauf) ===")
         train_model(df)
         runtime = get_last_timing("train_model")
         print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
