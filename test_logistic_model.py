@@ -11,11 +11,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 1: Vorhersagefunktion (predict)")
         print("=" * 54)
-        #print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
 
         # Daten laden
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
+        print("=== Modell trainieren ===")
 
         # Modell trainieren
         model, X_test, y_test = train_model(df)
@@ -23,7 +23,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Modell evaluieren
         acc = evaluate_model(model, X_test, y_test)
-        print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
+        print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
 
         # Genauigkeit prüfen
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
@@ -36,20 +36,19 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
         print("=" * 54)
-        #print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         # Daten laden
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
 
         # Referenzlauf
-        print("=== Starte Referenzlauf ===")
+        print("=== Modell trainieren (Referenzlauf) ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
         print(f"→ train_model ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
-        print("=== Starte Testlauf ===")
+        print("=== Modell trainieren (Testlauf) ===")
         train_model(df)
         runtime = get_last_timing("train_model")
         print(f"→ train_model ran in: {runtime:.4f} sec\n")
@@ -63,9 +62,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Bewertung
         if runtime <= limit:
-            print("  Laufzeit liegt innerhalb der Toleranz.")
+            print("  Laufzeit liegt innerhalb der Toleranz.\n")
         else:
-            print("  ❌ Laufzeit überschreitet das Limit!")
+            print("  ❌ Laufzeit überschreitet das Limit!\n")
 
         # Testbedingung
         self.assertLessEqual(
