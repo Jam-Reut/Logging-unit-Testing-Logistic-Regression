@@ -25,50 +25,40 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
-    # ------------------------------------------------
-    # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
-    # ------------------------------------------------
-    def test_2_train_runtime(self):
+        def test_2_train_runtime(self):
         print("=" * 54)
         print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
         print("=" * 54)
         print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
-        # Datensatz laden
         df = load_data("advertising.csv")
 
         # 1️⃣ Referenzlauf (Baseline)
         print("=== Modelltraining (Referenzlauf) ===")
-        _ = train_model(df)
-        ref_time = get_last_timing("train_model")
-        print(f"→ train_model ran in: {ref_time:.4f} sec\n")
+        train_model(df)
+        ref_time = get_last_timing("train_model")   # Nur Laufzeit holen, keine doppelte Ausgabe!
+        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
         # 2️⃣ Testlauf
         print("=== Modelltraining (Testlauf) ===")
-        _ = train_model(df)
+        train_model(df)
         runtime = get_last_timing("train_model")
-        print(f"→ train_model ran in: {runtime:.4f} sec\n")
+        print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
 
-        # 120 % Toleranzgrenze
         limit = ref_time * 1.2
 
-        # Laufzeit-Analyse (immer anzeigen, auch bei Fehler)
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
 
-        # Prüfung der Bedingung
         try:
-            self.assertLessEqual(
-                runtime,
-                limit,
-                f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
-            )
+            self.assertLessEqual(runtime, limit)
             print("Ergebnis: TESTFALL 2 PASSED\n")
-        except AssertionError as e:
+        except AssertionError:
             print("Ergebnis: TESTFALL 2 FAILED ❌\n")
-            raise e
+            raise
+
 
 
 if __name__ == "__main__":
