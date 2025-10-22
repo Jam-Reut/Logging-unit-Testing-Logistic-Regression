@@ -14,7 +14,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Daten laden
         df = load_data("advertising.csv")
-        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
+        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
         print("=== Modell trainieren ===")
 
         # Modell trainieren
@@ -24,6 +24,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Modell evaluieren
         acc = evaluate_model(model, X_test, y_test)
         print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
+        print(f"Final Accuracy: {acc:.2f}\n")
 
         # Genauigkeit prüfen
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
