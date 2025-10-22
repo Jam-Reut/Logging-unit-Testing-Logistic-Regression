@@ -39,7 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
-        # ------------------------------------------------
+    # ------------------------------------------------
     # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
     # ------------------------------------------------
     def test_2_train_runtime(self):
@@ -59,26 +59,24 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # 120 % Toleranzgrenze
         limit = ref_time * 1.2
 
-        # Analyse soll IMMER ausgegeben werden (auch bei Fehler)
+        # Laufzeit-Analyse (immer anzeigen, auch bei Fehlern)
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
 
-        # Bedingung prüfen
-        self.assertLessEqual(
-            runtime,
-            limit,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
-        )
+        # Prüfung der Bedingung
+        try:
+            self.assertLessEqual(
+                runtime,
+                limit,
+                f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+            )
+            print("Ergebnis: TESTFALL 2 PASSED\n")
+        except AssertionError as e:
+            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            raise e
 
-        print("Ergebnis: TESTFALL 2 PASSED\n")
-
-
-        print("=== Laufzeit-Analyse ===")
-        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
-        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
 
 
 if __name__ == "__main__":
