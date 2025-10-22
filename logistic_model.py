@@ -33,7 +33,7 @@ def load_data(file_path):
 
 @timed
 def train_model(df):
-    print("\n=== Modelltraining (Referenzlauf) ===")
+    print("\n=== Modelltraining ===")
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
