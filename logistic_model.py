@@ -55,7 +55,7 @@ def evaluate_model(model, X_test, y_test):
 
 
 if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===")
+    #print("=== Starte logistic_model.py ===")
 
     # Datensatz laden
     df = load_data("advertising.csv")
