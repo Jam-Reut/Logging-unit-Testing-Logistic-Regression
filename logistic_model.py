@@ -62,3 +62,4 @@ if __name__ == "__main__":
     acc = evaluate_model(model, X_test, y_test)
     print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
     print(f"Final Accuracy: {acc:.2f}")
+	
