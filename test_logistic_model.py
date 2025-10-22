@@ -4,6 +4,9 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 
 class TestLogisticRegressionModel(unittest.TestCase):
 
+    # ------------------------------------------------
+    # TESTFALL 1: Vorhersagefunktion (predict)
+    # ------------------------------------------------
     def test_1_predict_function(self):
         print("=" * 54)
         print("TESTFALL 1: Vorhersagefunktion (predict)")
@@ -21,27 +24,40 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (<0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
+    # ------------------------------------------------
+    # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
+    # ------------------------------------------------
     def test_2_train_runtime(self):
         print("=" * 54)
         print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
         print("=" * 54)
+        print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         df = load_data("advertising.csv")
 
         # Referenzlauf
+        print("→ Starte Referenzlauf ...")
         train_model(df)
         ref_time = get_last_timing("train_model")
+        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
+        print("→ Starte Testlauf ...")
         train_model(df)
         runtime = get_last_timing("train_model")
+        print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
 
-        # Analyse
+        # Laufzeitanalyse
         limit = ref_time * 1.2
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
+        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
+
+        if runtime <= limit:
+            print("  ✅ Laufzeit liegt innerhalb der Toleranz.")
+        else:
+            print("  ❌ Laufzeit überschreitet das Limit!")
 
         self.assertLessEqual(
             runtime, limit,
