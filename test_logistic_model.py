@@ -39,7 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
-    # ------------------------------------------------
+        # ------------------------------------------------
     # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
     # ------------------------------------------------
     def test_2_train_runtime(self):
@@ -48,18 +48,22 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
-        # Referenzlauf (Baseline)
+        # 1️⃣ Referenzlauf (Baseline)
+        print("=== Modelltraining (Referenzlauf) ===")
         _ = train_model(self.df)
         ref_time = get_last_timing("train_model")
+        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
-        # Zweiter Lauf (Testlauf)
+        # 2️⃣ Testlauf
+        print("=== Modelltraining (Testlauf) ===")
         _ = train_model(self.df)
         runtime = get_last_timing("train_model")
+        print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
 
         # 120 % Toleranzgrenze
         limit = ref_time * 1.2
 
-        # Laufzeit-Analyse (immer anzeigen, auch bei Fehlern)
+        # Laufzeit-Analyse (immer anzeigen)
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
@@ -76,6 +80,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         except AssertionError as e:
             print("Ergebnis: TESTFALL 2 FAILED ❌\n")
             raise e
+
 
 
 
