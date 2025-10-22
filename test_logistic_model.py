@@ -5,11 +5,11 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 class TestLogisticRegressionModel(unittest.TestCase):
 
     def setUp(self):
-        print("\n=== Starte Unit-Tests ===")
+        #print("\n=== Starte Unit-Tests ===")
         print("Setup: Initiales Training wird ausgeführt...\n")
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
-        print("Setup abgeschlossen.\n")
+        #print("Setup abgeschlossen.\n")
 
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
@@ -21,9 +21,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("Starte Testfall 1 – Validierung der Modellvorhersage auf Testdaten...\n")
 
         accuracy = evaluate_model(self.model, self.X_test, self.y_test)
-        print(f"Accuracy: {accuracy:.3f}")
+        print("=" * 54)
+		print(f"Accuracy: {accuracy:.3f}")
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
-
+		print("=" * 54)
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
