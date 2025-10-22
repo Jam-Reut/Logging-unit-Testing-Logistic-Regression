@@ -49,10 +49,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         # 1️⃣ Referenzlauf (Baseline)
-        print("=== Modelltraining (Referenzlauf) ===")
+        #print("=== Modelltraining (Referenzlauf) ===")
         _ = train_model(self.df)
         ref_time = get_last_timing("train_model")
-        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
+        #print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
         # 2️⃣ Testlauf
         print("=== Modelltraining (Testlauf) ===")
