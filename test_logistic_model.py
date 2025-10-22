@@ -4,11 +4,11 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 class TestLogisticRegressionModel(unittest.TestCase):
 
     def setUp(self):
-        print("\n=== Starte Unit-Tests ===")
-        print("Setup: Initiales Training wird ausgeführt...\n")
+        #print("\n=== Starte Unit-Tests ===")
+        #print("Setup: Initiales Training wird ausgeführt...\n")
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
-        print("Setup abgeschlossen.\n")
+        #print("Setup abgeschlossen.\n")
 
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
