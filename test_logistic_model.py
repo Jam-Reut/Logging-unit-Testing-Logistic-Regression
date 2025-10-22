@@ -47,7 +47,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
             limit,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
-
+		print()  # Leerzeile korrekt eingerückt
         print("Ergebnis: TESTFALL 2 PASSED\n")
         print()  # Leerzeile korrekt eingerückt
         print("=== Laufzeit-Analyse ===")
