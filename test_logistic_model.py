@@ -39,7 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         #print("=== Modelltraining (Referenzlauf) ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
-		print ()
+    print ()
         print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
