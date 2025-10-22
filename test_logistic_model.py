@@ -1,8 +1,8 @@
 import unittest
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-
 class TestLogisticRegressionModel(unittest.TestCase):
+
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
     # ------------------------------------------------
@@ -13,12 +13,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
 
         df = load_data("advertising.csv")
+        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
+
         model, X_test, y_test = train_model(df)
+        print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec")
 
         accuracy = evaluate_model(model, X_test, y_test)
-        print(f"\n→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
-        print(f"Accuracy: {accuracy:.3f}")
+        print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
 
+        print(f"\nAccuracy: {accuracy:.3f}")
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
@@ -32,7 +35,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         df = load_data("advertising.csv")
-
         # Referenzlauf
         print("=== Modelltraining (Referenzlauf) ===")
         train_model(df)
@@ -47,22 +49,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         limit = ref_time * 1.2
 
-        # Ergebnisprüfung
-        if runtime <= limit:
-            result = "PASSED"
-        else:
-            result = "FAILED ❌"
-
+        # Analyse immer zeigen – vor der Assertion
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
-        print(f"Ergebnis: TESTFALL 2 {result}\n")
 
-        # Testbedingung ausführen
-        self.assertLessEqual(runtime, limit,
-                             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)")
-
+        self.assertLessEqual(
+            runtime, limit,
+            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+        )
+        print("Ergebnis: TESTFALL 2 PASSED\n")
 
 if __name__ == "__main__":
     print("\n=== Starte Unit-Tests ===\n")
