@@ -22,8 +22,7 @@ def get_last_timing(func_name):
 @my_timer
 def load_data(file_path):
     print("\n=== Datensatz laden ===")
-    print()
-	df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path)
     print(f"  Datei: {file_path} | Shape: {df.shape}")
     return df
 
