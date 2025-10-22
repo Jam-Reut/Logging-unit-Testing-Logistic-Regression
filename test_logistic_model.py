@@ -46,7 +46,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec")
-		print(f"")
         self.assertLessEqual(
             runtime,
             limit,
