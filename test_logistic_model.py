@@ -11,7 +11,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 1: Vorhersagefunktion (predict)")
         print("=" * 54)
-        print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
+        #print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
 
         # Daten laden
         df = load_data("advertising.csv")
@@ -36,7 +36,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
         print("=" * 54)
-        print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
+        #print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         # Daten laden
         df = load_data("advertising.csv")
@@ -46,13 +46,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=== Starte Referenzlauf ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
-        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
+        print(f"→ train_model ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
         print("=== Starte Testlauf ===")
         train_model(df)
         runtime = get_last_timing("train_model")
-        print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
+        print(f"→ train_model ran in: {runtime:.4f} sec\n")
 
         # Laufzeitanalyse
         limit = ref_time * 1.2
@@ -63,7 +63,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Bewertung
         if runtime <= limit:
-            print("  ✅ Laufzeit liegt innerhalb der Toleranz.")
+            print("  Laufzeit liegt innerhalb der Toleranz.")
         else:
             print("  ❌ Laufzeit überschreitet das Limit!")
 
