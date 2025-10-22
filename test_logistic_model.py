@@ -56,5 +56,3 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(argv=[""], exit=False)
-	
-	
