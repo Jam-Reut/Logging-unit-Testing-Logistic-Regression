@@ -19,12 +19,14 @@ def my_timer(func):
 def get_last_timing(func_name):
     return _last_timings.get(func_name, None)
 
+
 @my_timer
 def load_data(file_path):
     print("\n=== Datensatz laden ===")
     df = pd.read_csv(file_path)
     print(f"  Datei: {file_path} | Shape: {df.shape}")
     return df
+
 
 @my_timer
 def train_model(df):
@@ -36,6 +38,7 @@ def train_model(df):
     model = LogisticRegression(max_iter=1000, random_state=42)
     model.fit(X_train, y_train)
     return model, X_test, y_test
+
 
 @my_timer
 def evaluate_model(model, X_test, y_test):
@@ -50,12 +53,20 @@ def evaluate_model(model, X_test, y_test):
     print(classification_report(y_test, y_pred))
     return acc
 
+
 if __name__ == "__main__":
-    #print("=== Starte logistic_model.py ===")
+    print("=== Starte logistic_model.py ===")
+
+    # Datensatz laden
     df = load_data("advertising.csv")
-    print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")  # Leerzeile hier
+    print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
+
+    # Modell trainieren
+    print("=== Modell trainieren ===")
     model, X_test, y_test = train_model(df)
-    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")  # Leerzeile hier
+    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
+
+    # Modell evaluieren
     acc = evaluate_model(model, X_test, y_test)
-    print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")  # Leerzeile hier
-    print(f"Final Accuracy: {acc:.2f}")
+    print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
+    print(f"Final Accuracy: {acc:.2f}\n")
