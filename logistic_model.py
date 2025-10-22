@@ -4,26 +4,27 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import time
 
-# Timer dictionary
+# Dictionary zur Speicherung der letzten Laufzeiten
 _last_timings = {}
 
-def timed(func):
-    """Dekorator für Zeitmessung"""
+
+def my_timer(func):
+    """Dekorator zur Zeitmessung (wie im Artikel von Cohen, aber ohne doppelte Ausgabe)."""
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
         elapsed = time.time() - start
         _last_timings[func.__name__] = elapsed
-        print(f"→ {func.__name__} ran in: {elapsed:.4f} sec")
         return result
     return wrapper
+
 
 def get_last_timing(func_name):
     """Letzte gemessene Laufzeit abrufen"""
     return _last_timings.get(func_name, None)
 
 
-@timed
+@my_timer
 def load_data(file_path):
     print("\n=== Datensatz laden ===")
     df = pd.read_csv(file_path)
@@ -31,7 +32,7 @@ def load_data(file_path):
     return df
 
 
-@timed
+@my_timer
 def train_model(df):
     print("\n=== Modelltraining ===")
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
@@ -42,7 +43,7 @@ def train_model(df):
     return model, X_test, y_test
 
 
-@timed
+@my_timer
 def evaluate_model(model, X_test, y_test):
     print("\n=== Modellevaluierung ===")
     y_pred = model.predict(X_test)
@@ -57,6 +58,9 @@ def evaluate_model(model, X_test, y_test):
 
 
 if __name__ == "__main__":
-    #print("=== Starte logistic_model.py ===")
-    pass  # Hauptlauf deaktiviert, um doppelte Ausgabe zu vermeiden
-
+    print("=== Starte logistic_model.py ===")
+    df = load_data("advertising.csv")
+    model, X_test, y_test = train_model(df)
+    acc = evaluate_model(model, X_test, y_test)
+    print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
+    print(f"Final Accuracy: {acc:.2f}")

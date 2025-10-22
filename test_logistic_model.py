@@ -3,7 +3,6 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 
 
 class TestLogisticRegressionModel(unittest.TestCase):
-
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
     # ------------------------------------------------
@@ -13,15 +12,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
 
-        # Datensatz laden und Modell trainieren
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
 
-        # Modell evaluieren
         accuracy = evaluate_model(model, X_test, y_test)
+        print(f"\n→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
+        print(f"Accuracy: {accuracy:.3f}")
 
-        # Prüfung
-        print(f"\nAccuracy: {accuracy:.3f}")
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
@@ -36,33 +33,37 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         df = load_data("advertising.csv")
 
-        # 1️⃣ Referenzlauf (Baseline)
+        # Referenzlauf
         print("=== Modelltraining (Referenzlauf) ===")
         train_model(df)
-        ref_time = get_last_timing("train_model")  # Nur Laufzeit holen, keine doppelte Ausgabe!
-        print(f"→ train_model ran in: {ref_time:.4f} sec\n")
+        ref_time = get_last_timing("train_model")
+        print(f"→ train_model (Referenzlauf) ran in: {ref_time:.4f} sec\n")
 
-        # 2️⃣ Testlauf
+        # Testlauf
         print("=== Modelltraining (Testlauf) ===")
         train_model(df)
         runtime = get_last_timing("train_model")
-        print(f"→ train_model ran in: {runtime:.4f} sec\n")
+        print(f"→ train_model (Testlauf) ran in: {runtime:.4f} sec\n")
 
         limit = ref_time * 1.2
+
+        # Ergebnisprüfung
+        if runtime <= limit:
+            result = "PASSED"
+        else:
+            result = "FAILED ❌"
 
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
+        print(f"Ergebnis: TESTFALL 2 {result}\n")
 
-        try:
-            self.assertLessEqual(runtime, limit)
-            print("Ergebnis: TESTFALL 2 PASSED\n")
-        except AssertionError:
-            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
-            raise
+        # Testbedingung ausführen
+        self.assertLessEqual(runtime, limit,
+                             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)")
 
 
 if __name__ == "__main__":
-    # print("\n=== Starte Unit-Tests ===\n")
+    print("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)
