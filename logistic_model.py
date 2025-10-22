@@ -52,7 +52,7 @@ def evaluate_model(model, X_test, y_test):
     return acc
 
 if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===")
+    #print("=== Starte logistic_model.py ===")
     df = load_data("advertising.csv")
     print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
 
