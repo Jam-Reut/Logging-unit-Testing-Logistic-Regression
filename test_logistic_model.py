@@ -18,7 +18,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Setup wird nur einmal zu Beginn ausgeführt, nicht vor jedem Test."""
-        print("\n=== Starte Unit-Tests ===")
+        #print("\n=== Starte Unit-Tests ===")
         print("Setup: Initiales Training wird ausgeführt...\n")
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
@@ -39,7 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(accuracy, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
-    # ------------------------------------------------
+        # ------------------------------------------------
     # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
     # ------------------------------------------------
     def test_2_train_runtime(self):
@@ -59,7 +59,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # 120 % Toleranzgrenze
         limit = ref_time * 1.2
 
-        # Testbedingung: Laufzeit darf 120 % der Referenz nicht überschreiten
+        # Analyse soll IMMER ausgegeben werden (auch bei Fehler)
+        print("=== Laufzeit-Analyse ===")
+        print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
+        print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
+        print(f"  Erlaubtes Limit (120 %): {limit:.4f} sec\n")
+
+        # Bedingung prüfen
         self.assertLessEqual(
             runtime,
             limit,
@@ -67,6 +73,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         )
 
         print("Ergebnis: TESTFALL 2 PASSED\n")
+
 
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
