@@ -7,7 +7,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 1: Vorhersagefunktion (predict)")
         print("=" * 54)
-        print("Starte Testfall 1 – Validierung der Modellvorhersage...\n")
 
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
@@ -25,7 +24,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 54)
         print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
         print("=" * 54)
-        print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
