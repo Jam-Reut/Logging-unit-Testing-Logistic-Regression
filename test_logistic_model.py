@@ -22,7 +22,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("Setup: Initiales Training wird ausgeführt...\n")
         cls.df = load_data("advertising.csv")
         cls.model, cls.X_test, cls.y_test = train_model(cls.df)
-        print("Setup abgeschlossen.\n")
+        print("Initiales Setup abgeschlossen.\n")
 
     # ------------------------------------------------
     # TESTFALL 1: Vorhersagefunktion (predict)
