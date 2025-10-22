@@ -30,12 +30,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
     # ------------------------------------------------
     def test_2_train_runtime(self):
-        print("=" * 54)
-        print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
-        print("=" * 54)
-        print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
+    print("=" * 54)
+    print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
+    print("=" * 54)
+    print("Starte Testfall 2 – Analyse der Trainingslaufzeit...\n")
 
+    # Datensatz still laden (keine Konsolenausgabe)
+    import contextlib
+    import io
+    with contextlib.redirect_stdout(io.StringIO()):
         df = load_data("advertising.csv")
+
 
         # Referenzlauf
         # print("=== Modelltraining (Referenzlauf) ===")
