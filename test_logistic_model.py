@@ -4,7 +4,7 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 class TestLogisticRegressionModel(unittest.TestCase):
 
     def setUp(self):
-        #print("\n=== Starte Unit-Tests ===")
+        print("\n=== Starte Unit-Tests ===")
         print("Setup: Initiales Training wird ausgeführt...\n")
         self.df = load_data("advertising.csv")
         self.model, self.X_test, self.y_test = train_model(self.df)
@@ -49,7 +49,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         )
 
         print("Ergebnis: TESTFALL 2 PASSED\n")
-		print("=== Laufzeit-Analyse ===")
+		print()
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
