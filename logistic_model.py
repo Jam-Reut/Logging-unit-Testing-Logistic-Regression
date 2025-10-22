@@ -57,10 +57,6 @@ def evaluate_model(model, X_test, y_test):
 
 
 if __name__ == "__main__":
-    #print("=== Starte logistic_model.py ===")
+    print("=== Starte logistic_model.py ===")
+    pass  # Hauptlauf deaktiviert, um doppelte Ausgabe zu vermeiden
 
-    #df = load_data("advertising.csv")
-    #model, X_test, y_test = train_model(df)
-    #acc = evaluate_model(model, X_test, y_test)
-	#print()
-    #print(f"Final Accuracy: {acc:.2f}")
