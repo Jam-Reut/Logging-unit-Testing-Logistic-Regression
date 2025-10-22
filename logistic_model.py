@@ -28,7 +28,6 @@ def load_data(file_path):
 
 @my_timer
 def train_model(df):
-    #print("\n=== Modelltraining ===")
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(
@@ -52,14 +51,11 @@ def evaluate_model(model, X_test, y_test):
     return acc
 
 if __name__ == "__main__":
-    #print("=== Starte logistic_model.py ===")
+    print("=== Starte logistic_model.py ===")
     df = load_data("advertising.csv")
-    print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
-
+    print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")  # Leerzeile hier
     model, X_test, y_test = train_model(df)
-    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec")
-
+    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")  # Leerzeile hier
     acc = evaluate_model(model, X_test, y_test)
-    print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec")
+    print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")  # Leerzeile hier
     print(f"Final Accuracy: {acc:.2f}")
-	
