@@ -49,7 +49,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         )
 
         print("Ergebnis: TESTFALL 2 PASSED\n")
-		print()
+		print(				)
         print("=== Laufzeit-Analyse ===")
         print(f"  Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"  Aktuelle Laufzeit: {runtime:.4f} sec")
