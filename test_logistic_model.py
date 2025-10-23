@@ -41,28 +41,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Daten laden
         df = load_data("advertising.csv")
-        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
 
         # Referenzlauf
-        print("=== Modell trainieren (Referenzlauf) ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
-        print(f"→ train_model ran in: {ref_time:.4f} sec\n")
 
         # Testlauf
-        print("=== Modell trainieren (Testlauf) ===")
         train_model(df)
         runtime = get_last_timing("train_model")
-        print(f"→ train_model ran in: {runtime:.4f} sec\n")
 
-        # Testbedingung
+        # Laufzeitanalyse (immer ausgeben!)
         limit = ref_time * 1.2
-        self.assertLessEqual(
-            runtime, limit,
-            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
-        )
-
-        # Laufzeitanalyse (nach Logging ausgeben)
         print("\n=== Laufzeit-Analyse ===")
         print(f"Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"Aktuelle Laufzeit: {runtime:.4f} sec")
@@ -73,7 +62,14 @@ class TestLogisticRegressionModel(unittest.TestCase):
         else:
             print("\n❌ Laufzeit überschreitet das Limit!\n")
 
+        # Danach Testbedingung prüfen
+        self.assertLessEqual(
+            runtime, limit,
+            f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
+        )
+
         print("Ergebnis: TESTFALL 2 PASSED\n")
+
 
 
 if __name__ == "__main__":
