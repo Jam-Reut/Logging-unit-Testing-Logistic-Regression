@@ -100,7 +100,7 @@ def evaluate_model(model, X_test, y_test):
 # MAIN (nur zu Demonstrationszwecken)
 # ------------------------------------------------
 if __name__ == "__main__":
-    logger.info("=== Starte logistic_model.py ===")
+    #logger.info("=== Starte logistic_model.py ===")
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
     acc = evaluate_model(model, X_test, y_test)
