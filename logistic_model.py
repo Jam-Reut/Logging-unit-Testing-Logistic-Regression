@@ -86,7 +86,8 @@ def evaluate_model(model, X_test, y_test):
     cm = confusion_matrix(y_test, y_pred)
 
     # --- Fachliche Ergebnisse zuerst ---
-    print(f"Genauigkeit (Accuracy): {acc:.2f}")
+    print()
+	print(f"Genauigkeit (Accuracy): {acc:.2f}")
     print("Confusion Matrix:")
     print(cm)
     print("\nKlassifikationsbericht (Auszug):")

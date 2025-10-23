@@ -23,7 +23,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Modell evaluieren (zeigt Accuracy und Confusion Matrix)
         acc = evaluate_model(model, X_test, y_test)
-        print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
+        #print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
 
         # Genauigkeit prüfen (Pflicht laut Aufgabenstellung)
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
@@ -57,7 +57,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print(f"Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
         if runtime <= limit:
-            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
+            print("Laufzeit liegt innerhalb der Toleranz.\n")
         else:
             print("❌ Laufzeit überschreitet das Limit!\n")
 
