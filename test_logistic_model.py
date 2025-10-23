@@ -28,7 +28,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 		# Genauigkeit prüfen
 		self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
-		print("\nErgebnis: TESTFALL 1 Erfolgreich\n")
+		print("\nErgebnis: TESTFALL 1 Passed\n")
 
 	# ------------------------------------------------
 	# TESTFALL 2: fit(): Laufzeit der Trainingsfunktion 
@@ -74,9 +74,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
 			f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
 		)
 
-		print("Ergebnis: TESTFALL 2 \n")
+		print("Ergebnis: TESTFALL 2 Passed \n")
 
 
 if __name__ == "__main__":
 	print("\n=== Starte Unit-Tests ===\n")
+	print()
 	unittest.main(argv=[""], exit=False)

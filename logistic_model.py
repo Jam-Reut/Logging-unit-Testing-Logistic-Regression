@@ -49,7 +49,7 @@ def evaluate_model(model, X_test, y_test):
     print(f"  Genauigkeit (Accuracy): {acc:.2f}")
     print("  Confusion Matrix:")
     print(cm)
-    print("\n  Klassifikationsbericht (Auszug):")
+    print("\n === Klassifikationsbericht (Auszug) ===")
     print(classification_report(y_test, y_pred))
     return acc
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     # Modell trainieren
     print("=== Modell trainieren ===")
     model, X_test, y_test = train_model(df)
-    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
+    print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec")
 
     # Modell evaluieren
     acc = evaluate_model(model, X_test, y_test)
