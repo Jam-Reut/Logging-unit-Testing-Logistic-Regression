@@ -41,7 +41,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Daten laden
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
-        print("=" * 54)
+        print()
         # Referenzlauf
         print("=== Modell trainieren (Referenzlauf) ===")
         train_model(df)
