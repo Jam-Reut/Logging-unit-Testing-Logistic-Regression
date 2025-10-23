@@ -7,7 +7,7 @@ import logging
 from functools import wraps
 
 # ------------------------------------------------
-# LOGGING KONFIGURATION
+# LOGGING-KONFIGURATION
 # ------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +22,7 @@ _last_timings = {}
 # Dekoratoren
 # ------------------------------------------------
 def my_timer(func):
+    """Misst Laufzeit und speichert sie in _last_timings."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
@@ -32,7 +33,9 @@ def my_timer(func):
         return result
     return wrapper
 
+
 def my_logger(func):
+    """Loggt Start, Erfolg und Fehler jeder Funktion."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         logger.info(f"Started '{func.__name__}'")
@@ -45,7 +48,9 @@ def my_logger(func):
             raise
     return wrapper
 
+
 def get_last_timing(func_name):
+    """Gibt die letzte gemessene Laufzeit einer Funktion zurück."""
     return _last_timings.get(func_name, None)
 
 # ------------------------------------------------
@@ -54,14 +59,16 @@ def get_last_timing(func_name):
 @my_logger
 @my_timer
 def load_data(file_path):
+    """Lädt Datensatz und gibt ihn als DataFrame zurück."""
     df = pd.read_csv(file_path)
-    print("\n=== Datensatz geladen ===")
     print(f"Datei: {file_path} | Shape: {df.shape}")
     return df
+
 
 @my_logger
 @my_timer
 def train_model(df):
+    """Trainiert das logistische Regressionsmodell."""
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -69,9 +76,11 @@ def train_model(df):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
+
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
+    """Bewertet das Modell auf Testdaten."""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
@@ -86,11 +95,12 @@ def evaluate_model(model, X_test, y_test):
 
     return acc
 
+
 # ------------------------------------------------
-# MAIN
+# MAIN (nur zu Demonstrationszwecken)
 # ------------------------------------------------
 if __name__ == "__main__":
-    #logger.info("=== Starte logistic_model.py ===")
+    logger.info("=== Starte logistic_model.py ===")
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
     acc = evaluate_model(model, X_test, y_test)

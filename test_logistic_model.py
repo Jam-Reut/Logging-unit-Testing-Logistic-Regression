@@ -8,29 +8,27 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        logger.info("=== TESTFALL 1: predict(): Vorhersagefunktion ===")
+        print("\n======================================================")
+        print("TESTFALL 1: predict(): Vorhersagefunktion")
+        print("======================================================\n")
 
-        # Daten laden
         df = load_data("advertising.csv")
-
-        # Modell trainieren
         model, X_test, y_test = train_model(df)
-
-        # Modell evaluieren
         acc = evaluate_model(model, X_test, y_test)
-        logger.info(f"Final Accuracy: {acc:.2f}")
 
-        # Genauigkeit prüfen
+        print(f"\nFinal Accuracy: {acc:.2f}\n")
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
-        logger.info("Ergebnis: TESTFALL 1 PASSED\n")
+        print("Ergebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
-        logger.info("=== TESTFALL 2: fit(): Laufzeit der Trainingsfunktion ===")
+        print("\n======================================================")
+        print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        print("======================================================\n")
 
-        # Daten laden
+        # Daten laden (einmal reicht)
         df = load_data("advertising.csv")
 
         # Referenzlauf
@@ -40,9 +38,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Testlauf
         train_model(df)
         runtime = get_last_timing("train_model")
-
-        # Laufzeitanalyse (nur als Ausgabe für Prüfer, kein Logging)
         limit = ref_time * 1.2
+
+        # Laufzeitanalyse — nach dem Logging-Block ausgeben
         print("\n=== Laufzeit-Analyse ===")
         print(f"Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"Aktuelle Laufzeit: {runtime:.4f} sec")
@@ -53,7 +51,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         else:
             print("\n❌ Laufzeit überschreitet das Limit!\n")
 
-        # Testbedingung
+        # Assertion am Ende, damit Analyse davor sichtbar bleibt
         self.assertLessEqual(
             runtime, limit,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
@@ -63,5 +61,5 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    logger.info("=== Starte Unit-Tests ===")
+    #print("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)
