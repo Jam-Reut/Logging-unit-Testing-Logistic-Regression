@@ -14,12 +14,12 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Daten laden
         df = load_data("advertising.csv")
-        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
+        #print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
 
         # Modell trainieren
-        print("=== Modell trainieren ===")
+        #print("=== Modell trainieren ===")
         model, X_test, y_test = train_model(df)
-        print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
+        #print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
 
         # Modell evaluieren (zeigt Accuracy und Confusion Matrix)
         acc = evaluate_model(model, X_test, y_test)
@@ -39,7 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Daten laden
         df = load_data("advertising.csv")
-        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
+        #print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
 
         # Referenzlauf
         train_model(df)
