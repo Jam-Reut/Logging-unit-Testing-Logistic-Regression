@@ -1,11 +1,11 @@
 import unittest
-from logistic_model import load_data, train_model, evaluate_model, get_last_timing, logger
+from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 
 class TestLogisticRegressionModel(unittest.TestCase):
 
     # ------------------------------------------------
-    # TESTFALL 1: predict(): Vorhersagefunktion 
+    # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
         print("=" * 54)
@@ -21,18 +21,16 @@ class TestLogisticRegressionModel(unittest.TestCase):
         model, X_test, y_test = train_model(df)
         print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
 
-        # Modell evaluieren
+        # Modell evaluieren (zeigt Accuracy und Confusion Matrix)
         acc = evaluate_model(model, X_test, y_test)
         print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
-        print(f"Final Accuracy: {acc:.2f}\n")
 
-        # Genauigkeit prüfen
+        # Genauigkeit prüfen (Pflicht laut Aufgabenstellung)
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
-
     # ------------------------------------------------
-    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion 
+    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
         print("=" * 54)
@@ -41,6 +39,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Daten laden
         df = load_data("advertising.csv")
+        print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec\n")
 
         # Referenzlauf
         train_model(df)
@@ -50,26 +49,25 @@ class TestLogisticRegressionModel(unittest.TestCase):
         train_model(df)
         runtime = get_last_timing("train_model")
 
-        # Laufzeitanalyse (immer ausgeben!)
+        # Laufzeitanalyse (immer zeigen, auch bei Fehlern)
         limit = ref_time * 1.2
-        print("\n=== Laufzeit-Analyse ===")
+        print("=== Laufzeit-Analyse ===")
         print(f"Referenzlaufzeit: {ref_time:.4f} sec")
         print(f"Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f"Erlaubtes Limit (120%): {limit:.4f} sec")
+        print(f"Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
         if runtime <= limit:
-            print("\n✅ Laufzeit liegt innerhalb der Toleranz.\n")
+            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
         else:
-            print("\n❌ Laufzeit überschreitet das Limit!\n")
+            print("❌ Laufzeit überschreitet das Limit!\n")
 
-        # Danach Testbedingung prüfen
+        # Testbedingung
         self.assertLessEqual(
             runtime, limit,
             f"Laufzeit {runtime:.4f}s überschreitet 120 % der Referenzzeit ({ref_time:.4f}s)"
         )
 
         print("Ergebnis: TESTFALL 2 PASSED\n")
-
 
 
 if __name__ == "__main__":
