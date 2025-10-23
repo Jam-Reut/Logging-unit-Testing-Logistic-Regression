@@ -52,7 +52,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 		# Laufzeitanalyse (immer zeigen, auch bei Fehlern)
 		limit = ref_time * 1.2
-		print("=== Laufzeit-Analyse ===")
+		print("=== Laufzeitanalyse, um die gemessenen Zeiten nachvollziehen zu können ===")
 		print(f"Referenzlaufzeit: {ref_time:.4f} sec")
 		print(f"Aktuelle Laufzeit: {runtime:.4f} sec")
 		print(f"Erlaubtes Limit (120%): {limit:.4f} sec\n")
