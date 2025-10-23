@@ -9,15 +9,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     def test_1_predict_function(self):
         print("=" * 54)
-        print("TESTFALL 1: Vorhersagefunktion (predict)")
+        print("TESTFALL 1: predict(): Vorhersagefunktion")
         print("=" * 54)
 
         # Daten laden
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
-        print("=== Modell trainieren ===")
-
-        # Modell trainieren
+        print()
+		# Modell trainieren
+		print("=== Modell trainieren ===")
         model, X_test, y_test = train_model(df)
         print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec")
 
@@ -35,7 +35,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     def test_2_train_runtime(self):
         print("=" * 54)
-        print("TESTFALL 2: Laufzeit der Trainingsfunktion (fit)")
+        print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 54)
 
         # Daten laden
