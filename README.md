@@ -1,6 +1,6 @@
-=== Logistic Regression - Logging und Unit-Tests ===
+Logistic Regression - Logging und Unit-Tests
 
-=== Online Ausführen via Binder ===
+Online Ausführen via Binder ===
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Jam-Reut/Logging-unit-Testing-Logistic-Regression/main?labpath=auto_start.ipynb)
 
 Klicke auf den Button, um das Jupyter Notebook `auto_start.ipynb` interaktiv online zu starten.  
