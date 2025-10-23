@@ -4,6 +4,9 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 
 class TestLogisticRegressionModel(unittest.TestCase):
 
+    # ------------------------------------------------
+    # TESTFALL 1: predict(): Vorhersagefunktion 
+    # ------------------------------------------------
     def test_1_predict_function(self):
         print("=" * 54)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
@@ -16,7 +19,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         model, X_test, y_test = train_model(df)
         print(f"→ train_model ran in: {get_last_timing('train_model'):.4f} sec\n")
 
-        print("=== Modellevaluierung ===")
         acc = evaluate_model(model, X_test, y_test)
         print(f"→ evaluate_model ran in: {get_last_timing('evaluate_model'):.4f} sec\n")
         print(f"Final Accuracy: {acc:.2f}\n")
@@ -24,6 +26,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertGreaterEqual(acc, 0.9, "Accuracy ist zu niedrig (< 0.9)")
         print("Ergebnis: TESTFALL 1 PASSED\n")
 
+    # ------------------------------------------------
+    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion 
+    # ------------------------------------------------
     def test_2_train_runtime(self):
         print("=" * 54)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
@@ -35,7 +40,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=== Modell trainieren (Referenzlauf) ===")
         train_model(df)
         ref_time = get_last_timing("train_model")
-        # ref_time = 0.30  # feste Referenzzeit in Sekunden (optional: diese Zeile aktivieren und die obige Messung ersetzen)
+        # ref_time = 0.30  # feste Referenzzeit in Sekunden (optional)
         print(f"→ train_model ran in: {ref_time:.4f} sec\n")
 
         print("=== Modell trainieren (Testlauf) ===")
