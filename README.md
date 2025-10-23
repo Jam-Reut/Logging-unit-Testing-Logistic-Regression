@@ -31,7 +31,7 @@ Das Ziel ist es, zu demonstrieren, wie man Modelltraining und -vorhersage system
 
 === Beispielhafte Logausgabe ===
 
-### 1 predict()`
+### 1 predict()
 Prüft:
 - Accuracy ≥ 0.90  
 - Confusion Matrix + Klassifikationsbericht  
@@ -46,7 +46,7 @@ Beispielausgabe:
 Final Accuracy: 0.97
 Ergebnis: TESTFALL 1 PASSED
 
-### 2 fit()`
+### 2 fit()
 Prüft:
 - Trainingslaufzeit ≤ 120 % der Referenzzeit  
 - Laufzeit wird per `my_timer` geloggt  
@@ -54,9 +54,9 @@ Prüft:
 Beispielausgabe:
 
 === Laufzeit-Analyse ===
-  Referenzlaufzeit: 0.3000 sec
-  Aktuelle Laufzeit: 0.2903 sec
-  Erlaubtes Limit (120 %): 0.3600 sec
+- Referenzlaufzeit: 0.3000 sec
+- Aktuelle Laufzeit: 0.2903 sec
+- Erlaubtes Limit (120 %): 0.3600 sec
 
   Laufzeit liegt innerhalb der Toleranz.
 Ergebnis: TESTFALL 2 PASSED
