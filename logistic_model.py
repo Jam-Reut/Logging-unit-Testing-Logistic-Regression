@@ -59,7 +59,7 @@ def get_last_timing(func_name):
 @my_timer
 def load_data(file_path):
     df = pd.read_csv(file_path)
-    logger.info(f"=== Datensatz geladen ===")
+    #logger.info(f"=== Datensatz geladen ===")
     logger.info(f"Datei: {file_path} | Shape: {df.shape}")
     return df
 
@@ -79,7 +79,7 @@ def evaluate_model(model, X_test, y_test):
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    logger.info("=== Modellevaluierung ===")
+    #logger.info("=== Modellevaluierung ===")
     logger.info(f"Genauigkeit (Accuracy): {acc:.2f}")
     logger.info(f"Confusion Matrix:\n{cm}")
     logger.info("\n" + classification_report(y_test, y_pred))

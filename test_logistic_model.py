@@ -22,7 +22,8 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Laufzeitanalyse
         limit = ref_time * 1.2
-        logger.info("=== Laufzeit-Analyse ===")
+        logger.info()
+		logger.info("=== Laufzeit-Analyse ===")
         logger.info(f"Referenzlaufzeit: {ref_time:.4f} sec")
         logger.info(f"Aktuelle Laufzeit: {runtime:.4f} sec")
         logger.info(f"Erlaubtes Limit (120%): {limit:.4f} sec")
