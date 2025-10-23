@@ -3,18 +3,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import time
+from functools import wraps
 
 # Laufzeiten speichern
 _last_timings = {}
 
+
 def my_timer(func):
-    """Zeit messen & speichern (kein print hier!)."""
+    """Misst Laufzeit einer Funktion und speichert sie zentral (SE-konform)."""
+    @wraps(func)
     def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        _last_timings[func.__name__] = time.time() - start
+        start = time.perf_counter()
+        result = func(*args, **kwargs)      # keine Veränderung der API
+        duration = time.perf_counter() - start
+        _last_timings[func.__name__] = duration
         return result
     return wrapper
+
 
 def get_last_timing(func_name):
     return _last_timings.get(func_name, None)

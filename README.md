@@ -60,9 +60,7 @@ Beispielausgabe:
 
   Laufzeit liegt innerhalb der Toleranz.
 Ergebnis: TESTFALL 2 PASSED
-```
 
----
 
 === Logging & Testergebnisse ===
 
