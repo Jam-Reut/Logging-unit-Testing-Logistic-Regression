@@ -5,7 +5,7 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 class TestLogisticRegressionModel(unittest.TestCase):
 
     # ------------------------------------------------
-    # TESTFALL 1: Vorhersagefunktion (predict)
+    # TESTFALL 1: predict(): Vorhersagefunktion 
     # ------------------------------------------------
     def test_1_predict_function(self):
         print("=" * 54)
@@ -31,7 +31,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
-    # TESTFALL 2: Laufzeit der Trainingsfunktion (fit)
+    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion 
     # ------------------------------------------------
     def test_2_train_runtime(self):
         print("=" * 54)
@@ -41,7 +41,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Daten laden
         df = load_data("advertising.csv")
         print(f"→ load_data ran in: {get_last_timing('load_data'):.4f} sec")
-
+        print("=" * 54)
         # Referenzlauf
         print("=== Modell trainieren (Referenzlauf) ===")
         train_model(df)
