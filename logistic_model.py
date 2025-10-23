@@ -4,6 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import time
 import logging
+from functools import wraps
 
 # ------------------------------------------------
 # Logging konfigurieren
@@ -21,6 +22,7 @@ _last_timings = {}
 # ------------------------------------------------
 def my_timer(func):
     """Misst die Laufzeit einer Funktion und speichert sie."""
+    @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
@@ -30,8 +32,10 @@ def my_timer(func):
         return result
     return wrapper
 
+
 def my_logger(func):
     """Protokolliert Start, Ende und Status einer Funktion."""
+    @wraps(func)
     def wrapper(*args, **kwargs):
         logger.info(f"Started '{func.__name__}'")
         logger.info(f"Running '{func.__name__}' ...")
@@ -44,8 +48,11 @@ def my_logger(func):
             raise
     return wrapper
 
+
 def get_last_timing(func_name):
+    """Gibt die zuletzt gemessene Laufzeit zurück."""
     return _last_timings.get(func_name, None)
+
 
 # ------------------------------------------------
 # Hauptfunktionen
@@ -53,12 +60,15 @@ def get_last_timing(func_name):
 @my_logger
 @my_timer
 def load_data(file_path):
+    """CSV-Datensatz laden."""
     df = pd.read_csv(file_path)
     return df
+
 
 @my_logger
 @my_timer
 def train_model(df):
+    """Trainiert das logistische Regressionsmodell."""
     X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
     y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -66,9 +76,11 @@ def train_model(df):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
+
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
+    """Bewertet das Modell mit Testdaten."""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
@@ -82,6 +94,7 @@ def evaluate_model(model, X_test, y_test):
     print(f"\nFinal Accuracy: {acc:.2f}")
 
     return acc
+
 
 # ------------------------------------------------
 # Hauptprogramm
