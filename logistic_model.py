@@ -5,9 +5,9 @@ import logging
 import time
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-# --- technischer Logger (Zeitstempel) für Mess-Logs ---
+# --- technischer Logger (mit Zeitstempel) ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 _TIMINGS = {}
 
-
-# === Bezeichnungen wie gefordert beibehalten ===
+# === Bezeichnungen beibehalten ===
 def mytimer(func):
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -32,15 +31,12 @@ def mytimer(func):
         return result
     return wrapper
 
-
 def get_last_timing(func_name: str):
     return _TIMINGS.get(func_name, None)
-
 
 @mytimer
 def load_data(csv_path: str):
     return pd.read_csv(csv_path)
-
 
 @mytimer
 def train_model(df: pd.DataFrame):
@@ -53,26 +49,23 @@ def train_model(df: pd.DataFrame):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
-
+# HYBRID: @mytimer für technische Logs; Metriken selbst ohne Zeitstempel via "plain"
 @mytimer
 def evaluate_model(model, X_test, y_test):
-    """Hybrid: Technische Logs mit Zeitstempel, Metriken ohne."""
     plain = logging.getLogger("plain")
 
-    # --- Metriken ohne Zeitstempel ---
-    plain.info("")
-    plain.info("Genauigkeit (Accuracy): {:.2f}".format(model.score(X_test, y_test)))
-
     y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    plain.info("Confusion Matrix:")
-    plain.info(cm)
-    plain.info("")
-    plain.info("Klassifikationsbericht (Auszug):")
     report = classification_report(y_test, y_pred)
-    plain.info(report)
-    plain.info("")
-    plain.info("Final Accuracy: {:.2f}".format(model.score(X_test, y_test)))
-    plain.info("")
 
-    return model.score(X_test, y_test)
+    # kompaktes, zusammenhängendes Ausgabe-Layout
+    plain.info("")  # Abstand
+    plain.info("Genauigkeit (Accuracy): {:.2f}".format(acc))
+    plain.info("Confusion Matrix:")
+    plain.info(f"{cm}\n")
+    plain.info("Klassifikationsbericht (Auszug):")
+    plain.info(report)
+    plain.info("\nFinal Accuracy: {:.2f}\n".format(acc))
+
+    return acc
