@@ -5,7 +5,7 @@ import logging
 import time
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # --- technischer Logger (mit Zeitstempel) ---
 logging.basicConfig(
@@ -16,6 +16,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 _TIMINGS = {}
+_LAST_METRICS_TEXT = ""  # wird von evaluate_model gesetzt
+
 
 # === Bezeichnungen beibehalten ===
 def mytimer(func):
@@ -34,9 +36,14 @@ def mytimer(func):
 def get_last_timing(func_name: str):
     return _TIMINGS.get(func_name, None)
 
+def get_last_metrics_text() -> str:
+    return _LAST_METRICS_TEXT
+
+
 @mytimer
 def load_data(csv_path: str):
     return pd.read_csv(csv_path)
+
 
 @mytimer
 def train_model(df: pd.DataFrame):
@@ -49,23 +56,39 @@ def train_model(df: pd.DataFrame):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
-# HYBRID: @mytimer für technische Logs; Metriken selbst ohne Zeitstempel via "plain"
-@mytimer
-def evaluate_model(model, X_test, y_test):
-    plain = logging.getLogger("plain")
 
+def evaluate_model(model, X_test, y_test):
+    """
+    Logging und Metriken werden NICHT vermischt:
+    - Technische Logs (Started/Running/Executed/Completed) erscheinen zusammen.
+    - Metriken werden gesammelt und vom Test NACH dem Log-Block ausgegeben.
+    """
+    global _LAST_METRICS_TEXT
+
+    # Technische Logs manuell (ohne Decorator), damit der gesamte Log-Block zusammenbleibt
+    start = time.time()
+    logger.info("Started 'evaluate_model'")
+    logger.info("Running 'evaluate_model' ...")
+
+    # --- Metriken berechnen, Text puffern (noch nicht drucken) ---
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred)
 
-    # kompaktes, zusammenhängendes Ausgabe-Layout
-    plain.info("")  # Abstand
-    plain.info("Genauigkeit (Accuracy): {:.2f}".format(acc))
-    plain.info("Confusion Matrix:")
-    plain.info(f"{cm}\n")
-    plain.info("Klassifikationsbericht (Auszug):")
-    plain.info(report)
-    plain.info("\nFinal Accuracy: {:.2f}\n".format(acc))
+    _LAST_METRICS_TEXT = (
+        "Genauigkeit (Accuracy): {:.2f}\n"
+        "Confusion Matrix:\n"
+        "{}\n\n"
+        "Klassifikationsbericht (Auszug):\n"
+        "{}\n\n"
+        "Final Accuracy: {:.2f}\n"
+    ).format(acc, cm, report, acc)
+
+    # Abschluss-Logs
+    elapsed = time.time() - start
+    _TIMINGS["evaluate_model"] = elapsed
+    logger.info(f"'evaluate_model' executed in {elapsed:.4f} sec")
+    logger.info("Completed 'evaluate_model' successfully.")
 
     return acc
