@@ -47,7 +47,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Referenzlaufmarkierungen VOR Testfall 2
         plain_logger.info("\n" + "─" * 70)
         plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
+        #plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
         plain_logger.info("─" * 70 + "\n")
 
         plain_logger.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
