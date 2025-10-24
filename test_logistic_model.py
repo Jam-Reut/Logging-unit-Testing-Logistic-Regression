@@ -27,27 +27,37 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
+        # Testfall 1-Header direkt nach dem Start
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
 
+        # Marker VOR den Log-Zeilen
+        plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
+
+        # Modelllauf
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         acc = evaluate_model(model, X_test, y_test)
 
+        # Genauigkeit prüfen
         self.assertGreaterEqual(acc, 0.9)
-        # Marker NACH der Accuracy-Ausgabe
-        #plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+
+        # Abschlussausgabe
         plain_logger.info("Ergebnis: TESTFALL 1 PASSED\n")
+
+        # Leerzeile + Start von Testfall 2-Header direkt danach
+        plain_logger.info("\n" + "=" * 70)
+        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        plain_logger.info("=" * 70 + "\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
-        # Referenzlaufmarkierungen VOR Testfall 2
-        plain_logger.info("\n" + "─" * 70)
-        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        #plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
+        # Referenzlaufmarkierungen
+        plain_logger.info("─" * 70)
+        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
         plain_logger.info("─" * 70 + "\n")
 
         plain_logger.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
@@ -56,11 +66,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         ref_time = get_last_timing("train_model")
         plain_logger.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
-        # Jetzt startet der eigentliche Testfall
-        plain_logger.info("=" * 70)
-        #plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        plain_logger.info("=" * 70 + "\n")
-
+        # Aktueller Lauf
         plain_logger.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
