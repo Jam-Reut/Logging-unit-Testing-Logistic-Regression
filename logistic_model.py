@@ -72,7 +72,7 @@ def evaluate_model(model, X_test, y_test):
     # Text an Tests zurückgeben, nicht drucken
     metrics_text = (
         f"TEST 1 LOGGING: Vorhersageprüfung\n"
-		f"Genauigkeit (Accuracy): {acc:.2f}\n"
+        f"Genauigkeit (Accuracy): {acc:.2f}\n"
         f"Confusion Matrix:\n{cm}\n\n"
         f"Klassifikationsbericht (Auszug):\n{report}\n"
         f"Final Accuracy: {acc:.2f}\n"
