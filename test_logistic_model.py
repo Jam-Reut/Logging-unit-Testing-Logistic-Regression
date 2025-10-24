@@ -57,17 +57,18 @@ class TestLogisticRegressionModel(unittest.TestCase):
         plain.info("=" * 70 + "\n")
 
         plain.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]\n")
-        plain.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
+        #plain.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
 
         df = load_data("advertising.csv")
         train_model(df)
         ref_time = get_last_timing("train_model")
-        plain.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
+        #plain.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
-        plain.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
-        train_model(df)
+        #plain.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
+        plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
+		train_model(df)
         runtime = get_last_timing("train_model")
-        plain.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
+        #plain.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
 
         limit = ref_time * 1.2
         plain.info("Laufzeitanalyse:")
