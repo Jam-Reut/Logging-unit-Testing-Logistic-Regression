@@ -78,8 +78,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
         plain.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         plain.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
-        self.assertLessEqual(runtime, limit)
-        plain.info("Ergebnis: TESTFALL 2 PASSED\n")
+        # --- Prüfung + Statusausgabe ---
+        try:
+            self.assertLessEqual(runtime, limit)
+            plain.info("Laufzeit liegt innerhalb der Toleranz.\n")
+            plain.info("Ergebnis: TESTFALL 2 PASSED ✅\n")
+        except AssertionError:
+            plain.info("❌ Laufzeit überschreitet das Limit!\n")
+            plain.info("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            raise  # sorgt dafür, dass unittest korrekt „FAIL“ markiert
 
 
 if __name__ == "__main__":
