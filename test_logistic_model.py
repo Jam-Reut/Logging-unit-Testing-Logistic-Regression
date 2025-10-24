@@ -24,31 +24,31 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
+        # Kopfbereich
         plain.info("\n=== Starte Unit-Tests ===\n")
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain.info("=" * 70 + "\n")
         plain.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
-        # Lade Daten + trainiere (unterdrücke Logs temporär)
+        # Logs temporär stumm – wir wollen zuerst Metriken
         root_logger = logging.getLogger()
         prev_level = root_logger.level
         root_logger.setLevel(logging.WARNING)
         try:
             df = load_data("advertising.csv")
             model, X_test, y_test = train_model(df)
+            acc = evaluate_model(model, X_test, y_test)
         finally:
             root_logger.setLevel(prev_level)
 
-        # Metriken (ohne Zeitstempel)
-        acc = evaluate_model(model, X_test, y_test)
-
-        # Jetzt Logs aktivieren, damit sie NACH den Metriken erscheinen
+        # Danach: Logs der Abläufe (sichtbar, aber keine doppelte Metrik)
         logging.getLogger().setLevel(logging.INFO)
-        df = load_data("advertising.csv")
-        model, X_test, y_test = train_model(df)
-        evaluate_model(model, X_test, y_test)
+        load_data("advertising.csv")
+        train_model(df)
 
+        # Ergebniszeile mit Leerzeile davor
+        self.assertGreaterEqual(acc, 0.9)
         plain.info("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
@@ -77,6 +77,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         plain.info(f" - Referenzlaufzeit: {ref_time:.4f} sec")
         plain.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         plain.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
+
+        if runtime <= limit:
+            plain.info("Laufzeit liegt innerhalb der Toleranz.\n")
+        else:
+            plain.info("❌ Laufzeit überschreitet das Limit!\n")
 
         self.assertLessEqual(runtime, limit)
         plain.info("Ergebnis: TESTFALL 2 PASSED\n")
