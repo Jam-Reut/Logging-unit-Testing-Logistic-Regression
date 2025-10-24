@@ -59,7 +59,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         ref_time = get_last_timing("train_model")
         plain_logger.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
-        plain_logger.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
+        plain_logger.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
         plain_logger.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
