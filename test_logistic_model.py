@@ -27,9 +27,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        plain_logger.info("=" * 70)
-        plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
-        plain_logger.info("=" * 70 + "\n")
+        #plain_logger.info("=" * 70)
+        #plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
+        #plain_logger.info("=" * 70 + "\n")
 
         plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
@@ -81,4 +81,5 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 if __name__ == "__main__":
     plain_logger.info("\n=== Starte Unit-Tests ===\n")
-    unittest.main(argv=[""], exit=False)
+    plain_logger.info("\n=== TESTFALL 1: predict(): Vorhersagefunktion ===\n")
+	unittest.main(argv=[""], exit=False)
