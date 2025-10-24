@@ -31,16 +31,23 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Einmaliger Referenzlauf für Laufzeitvergleich
+        # --------------------------------------------------------
+        # EINMALIGER REFERENZLAUF (vor allen Tests)
+        # --------------------------------------------------------
+        plain.info("\n" + "─" * 70)
+        plain.info("[SETUP-LOGGING: Referenzlauf (einmalig vor allen Tests)]")
+        plain.info("─" * 70 + "\n")
+
         df = load_data("advertising.csv")
         train_model(df)
         cls.REFERENCE_TIME = get_last_timing("train_model")
+
+        plain.info(f"[SETUP-LOGGING: Referenzlauf abgeschlossen – Referenzzeit: {cls.REFERENCE_TIME:.4f} sec]\n")
 
     # ------------------------------------------------
     # TESTFALL 1 – Vorhersageprüfung
     # ------------------------------------------------
     def test_1_predict_function(self):
-        plain.info("\n=== Starte Unit-Tests ===\n")
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain.info("=" * 70 + "\n")
@@ -88,4 +95,5 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    plain.info("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)

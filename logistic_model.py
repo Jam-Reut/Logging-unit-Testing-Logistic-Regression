@@ -91,4 +91,4 @@ def get_last_timing(func_name: str):
 
 
 if __name__ == "__main__":
-    plain_logger.info("=== Starte logistic_model.py ===\n")
+    #plain_logger.info("=== Starte logistic_model.py ===\n")
