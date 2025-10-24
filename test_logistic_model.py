@@ -2,18 +2,17 @@ import unittest
 import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-# --- Logging für technische Ausgaben (mit Zeitstempel) ---
+# Technische Logs mit Zeitstempel
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
 
-
 class TestLogisticRegressionModel(unittest.TestCase):
 
     # ------------------------------------------------
-    # SETUP: Einmaliger Referenzlauf für Laufzeitmessung
+    # SETUP: Referenzlauf (einmalig vor allen Tests)
     # ------------------------------------------------
     @classmethod
     def setUpClass(cls):
@@ -21,11 +20,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("[TEST 2 LOGGING: Referenzlauf (einmalig vor allen Tests)]")
         print("─" * 70 + "\n")
 
-        df = load_data("advertising.csv")
-        train_model(df)
-        cls.REFERENCE_TIME = get_last_timing("train_model")
+        # Marker VOR dem Referenzlauf -> erscheint vor den train_model-Logs
+        print("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
 
-        print(f"Referenzlauf abgeschlossen – Referenzzeit: {cls.REFERENCE_TIME:.4f} sec\n")
+        df = load_data("advertising.csv")
+        train_model(df)  # erzeugt die technischen Logs mit Zeitstempel
+
+        # Marker NACH dem Referenzlauf -> erscheint nach den train_model-Logs
+        cls.REFERENCE_TIME = get_last_timing("train_model")
+        print(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {cls.REFERENCE_TIME:.4f} sec]\n")
 
     # ------------------------------------------------
     # TESTFALL 1: predict(): Vorhersagefunktion
@@ -33,15 +36,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
     def test_1_predict_function(self):
         print("=" * 70)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
-        print("=" * 70)
-        print("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        print("=" * 70 + "\n")
+        print("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         acc = evaluate_model(model, X_test, y_test)
 
         self.assertGreaterEqual(acc, 0.9)
-        print("Ergebnis: TESTFALL 1 PASSED\n")
+        print("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
@@ -49,24 +52,20 @@ class TestLogisticRegressionModel(unittest.TestCase):
     def test_2_train_runtime(self):
         print("=" * 70)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        print("=" * 70)
+        print("=" * 70 + "\n")
 
         df = load_data("advertising.csv")
 
-        # --- Referenzlauf ---
-        print("\n[TEST 2 LOGGING: Referenzlauf beginnt]\n")
-        train_model(df)
-        ref_time = get_last_timing("train_model")
-        print(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
-
-        # --- Testlauf ---
-        print("[TEST 2 LOGGING: aktueller Lauf (im Unittest)]\n")
-        train_model(df)
+        # *** NUR EIN Trainingslauf im Test ***
+        print("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
+        train_model(df)  # erzeugt technische Logs
         runtime = get_last_timing("train_model")
         print(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
 
-        # --- Analyse ---
+        # Analyse ggü. EINMALIGER Referenzzeit aus setUpClass
+        ref_time = self.REFERENCE_TIME
         limit = ref_time * 1.2
+
         print("Laufzeitanalyse:")
         print(f" - Referenzlaufzeit: {ref_time:.4f} sec")
         print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
@@ -80,10 +79,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         self.assertLessEqual(runtime, limit)
         print("Ergebnis: TESTFALL 2 PASSED\n")
 
-
-# ------------------------------------------------
-# MAIN
-# ------------------------------------------------
 if __name__ == "__main__":
     print("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)
