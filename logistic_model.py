@@ -56,19 +56,26 @@ def train_model(df: pd.DataFrame):
 # ⚠️ KEIN Dekorator hier – keine Zeitstempel vor den Metriken
 @mytimer
 def evaluate_model(model, X_test, y_test):
-    """Druckt Metriken über 'plain'-Logger (ohne Zeitstempel) und gibt Accuracy zurück."""
+    import logging
+    logger = logging.getLogger()
+
+    # Keine Zeitstempel für Metriken selbst
     plain = logging.getLogger("plain")
+    plain.info("")
+    plain.info("Genauigkeit (Accuracy): {:.2f}".format(model.score(X_test, y_test)))
 
+    from sklearn.metrics import classification_report, confusion_matrix
     y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
-
-    plain.info(f"Genauigkeit (Accuracy): {acc:.2f}")
     plain.info("Confusion Matrix:")
-    plain.info(f"{cm}\n")
+    plain.info(cm)
+    plain.info("")
     plain.info("Klassifikationsbericht (Auszug):")
+    report = classification_report(y_test, y_pred)
     plain.info(report)
-    plain.info(f"\nFinal Accuracy: {acc:.2f}\n")
+    plain.info("")
+    plain.info("Final Accuracy: {:.2f}".format(model.score(X_test, y_test)))
+    plain.info("")
 
-    return acc
+    return model.score(X_test, y_test)
+
