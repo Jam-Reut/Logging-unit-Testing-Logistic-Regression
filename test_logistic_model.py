@@ -66,14 +66,14 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         #plain.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
         plain.info(" ")
-		plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
+        plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
         #plain.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
 
         limit = ref_time * 1.2
         plain.info(" ")
-		plain.info("Laufzeitanalyse:")
+        plain.info("Laufzeitanalyse:")
         plain.info(f" - Referenzlaufzeit: {ref_time:.4f} sec")
         plain.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         plain.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
