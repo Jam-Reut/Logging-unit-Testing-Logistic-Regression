@@ -25,11 +25,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     def test_1_predict_function(self):
         # Kopfbereich
-        plain.info("\n=== Starte Unit-Tests ===\n")
+        #plain.info("\n=== Starte Unit-Tests ===\n")
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain.info("=" * 70 + "\n")
-        plain.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        #plain.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         # Logs temporär stumm – wir wollen zuerst Metriken
         root_logger = logging.getLogger()
