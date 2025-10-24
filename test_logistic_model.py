@@ -43,7 +43,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         # Dann gesammelt und in einem Stück die Metriken ausgeben
         #plain.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
         plain.info(" \n")
-		plain.info(get_last_metrics_text())
+        plain.info(get_last_metrics_text())
 
         self.assertGreaterEqual(acc, 0.9)
         plain.info("Ergebnis: TESTFALL 1 PASSED\n")
