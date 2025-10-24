@@ -71,7 +71,7 @@ def evaluate_model(model, X_test, y_test):
     report = classification_report(y_test, y_pred)
     # Text an Tests zurückgeben, nicht drucken
     metrics_text = (
-        #f"TESTFALL 1: predict(): Vorhersagefunktion\n"
+        f"TESTFALL 1: predict(): Vorhersagefunktion\n"
         f"Genauigkeit (Accuracy): {acc:.2f}\n"
         f"Confusion Matrix:\n{cm}\n\n"
         f"Klassifikationsbericht (Auszug):\n{report}\n"
