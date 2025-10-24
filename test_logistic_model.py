@@ -27,39 +27,31 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        # Header ganz oben – jetzt VOR den Accuracy-Zeilen
+        # Marker und Header ganz am Anfang des Testlaufs
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
 
-        # Marker VOR Logs
         plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
-        # Jetzt starten die Funktionen
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         acc, metrics_output = evaluate_model(model, X_test, y_test)
 
-        # Inhaltliche Ausgabe (Accuracy etc.)
         print(metrics_output)
-
-        # Leerzeile + Ergebnis
         plain_logger.info("\nErgebnis: TESTFALL 1 PASSED\n")
-
-        # Direkter Übergang zu Testfall 2
-        plain_logger.info("=" * 70)
-        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        plain_logger.info("=" * 70 + "\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
-        plain_logger.info("─" * 70)
-        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
-        plain_logger.info("─" * 70 + "\n")
+        plain_logger.info("=" * 70)
+        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        plain_logger.info("=" * 70 + "\n")
 
+        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]\n")
         plain_logger.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
+
         df = load_data("advertising.csv")
         train_model(df)
         ref_time = get_last_timing("train_model")
@@ -86,5 +78,12 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # Überschrift VOR den Unittests ausgeben
     plain_logger.info("\n=== Starte Unit-Tests ===\n")
+
+    # 👉 Hier der Header für TESTFALL 1 direkt am Anfang
+    plain_logger.info("=" * 70)
+    plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
+    plain_logger.info("=" * 70 + "\n")
+
     unittest.main(argv=[""], exit=False)
