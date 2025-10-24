@@ -57,7 +57,7 @@ def evaluate_model(model, X_test, y_test):
     report = classification_report(y_test, y_pred)
 
     # Ausgabe im gewünschten Design:
-    plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+    #plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
     plain_logger.info(f"Genauigkeit (Accuracy): {acc:.2f}")
     plain_logger.info("Confusion Matrix:")
     plain_logger.info(f"{conf_matrix}\n")
