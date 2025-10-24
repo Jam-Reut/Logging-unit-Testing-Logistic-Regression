@@ -3,7 +3,7 @@ import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 # ------------------------------------------------------------
-# Logger
+# Technischer Logger (mit Zeitstempel)
 # ------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
@@ -11,6 +11,9 @@ logging.basicConfig(
     force=True
 )
 
+# ------------------------------------------------------------
+# Zweiter Logger (ohne Zeitstempel für Klartext)
+# ------------------------------------------------------------
 plain_logger = logging.getLogger("plain")
 plain_handler = logging.StreamHandler()
 plain_handler.setFormatter(logging.Formatter("%(message)s"))
@@ -21,28 +24,25 @@ plain_logger.propagate = False
 class TestLogisticRegressionModel(unittest.TestCase):
 
     # ------------------------------------------------
-    # TESTFALL 1
+    # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        # Header ganz oben (vor Metriken)
+        plain_logger.info("\n=== Starte Unit-Tests ===\n")
+
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
 
-        plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
-
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
-        acc, metrics_output = evaluate_model(model, X_test, y_test)
+        acc = evaluate_model(model, X_test, y_test)
 
-        # Metriken direkt unter dem Header
-        print(metrics_output)
         self.assertGreaterEqual(acc, 0.9)
 
-        plain_logger.info("\nErgebnis: TESTFALL 1 PASSED\n")
+        plain_logger.info("Ergebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
-    # TESTFALL 2
+    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
         plain_logger.info("=" * 70)
@@ -78,5 +78,4 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    plain_logger.info("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)
