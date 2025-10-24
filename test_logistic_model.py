@@ -27,18 +27,20 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        # Testfall 1-Header direkt nach dem Start
+        # Header direkt am Anfang (vor Accuracy-Ausgabe)
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
 
-        # Marker VOR den Log-Zeilen
-        plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
-
-        # Modelllauf
+        # Modell ausführen
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
+
+        # Der Header soll vor der Accuracy erscheinen
         acc = evaluate_model(model, X_test, y_test)
+
+        # Marker VOR den Log-Zeilen (also nach evaluate_model)
+        plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         # Genauigkeit prüfen
         self.assertGreaterEqual(acc, 0.9)
