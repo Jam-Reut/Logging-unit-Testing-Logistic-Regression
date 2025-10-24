@@ -31,8 +31,8 @@ class TestLogisticRegressionModel(unittest.TestCase):
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
-		plain_logger.info()
-		plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        plain_logger.info()
+        plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
