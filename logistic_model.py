@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# --- technischer Logger mit Zeitstempel (für @mytimer) ---
+# --- technischer Logger (Zeitstempel) für Mess-Logs ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -15,8 +15,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Laufzeiten speichern
-_timing_info = {}
+# Laufzeiten
+_TIMINGS = {}
 
 # === Bezeichnungen wie gefordert beibehalten ===
 def mytimer(func):
@@ -26,19 +26,20 @@ def mytimer(func):
         logger.info(f"Running '{func.__name__}' ...")
         result = func(*args, **kwargs)
         elapsed = time.time() - start
-        _timing_info[func.__name__] = elapsed
+        _TIMINGS[func.__name__] = elapsed
         logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
         logger.info(f"Completed '{func.__name__}' successfully.")
         return result
     return wrapper
 
 def get_last_timing(func_name: str):
-    return _timing_info.get(func_name, None)
+    return _TIMINGS.get(func_name, None)
 
-# === Hauptfunktionen ===
+
 @mytimer
 def load_data(csv_path: str):
     return pd.read_csv(csv_path)
+
 
 @mytimer
 def train_model(df: pd.DataFrame):
@@ -51,22 +52,22 @@ def train_model(df: pd.DataFrame):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
-# ⚠️ KEIN Dekorator hier – sonst würden Zeitstempel vor den Metriken erscheinen
+
+# ⚠️ KEIN Dekorator hier – keine Zeitstempel vor den Metriken
 def evaluate_model(model, X_test, y_test):
-    """Gibt Metriken im gewünschten Design über den plain-Logger aus und liefert Accuracy zurück."""
-    plain_logger = logging.getLogger("plain")  # zeitstempelloser Logger
+    """Druckt Metriken über 'plain'-Logger (ohne Zeitstempel) und gibt Accuracy zurück."""
+    plain = logging.getLogger("plain")
 
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred)
 
-    # Ausgabeformat exakt wie gefordert (ohne Zeitstempel)
-    plain_logger.info(f"Genauigkeit (Accuracy): {acc:.2f}")
-    plain_logger.info("Confusion Matrix:")
-    plain_logger.info(f"{cm}\n")
-    plain_logger.info("Klassifikationsbericht (Auszug):")
-    plain_logger.info(report)
-    plain_logger.info(f"\nFinal Accuracy: {acc:.2f}\n")
+    plain.info(f"Genauigkeit (Accuracy): {acc:.2f}")
+    plain.info("Confusion Matrix:")
+    plain.info(f"{cm}\n")
+    plain.info("Klassifikationsbericht (Auszug):")
+    plain.info(report)
+    plain.info(f"\nFinal Accuracy: {acc:.2f}\n")
 
     return acc
