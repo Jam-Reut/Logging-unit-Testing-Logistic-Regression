@@ -1,105 +1,79 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-import time
+import numpy as np
 import logging
-from functools import wraps
+import time
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# ------------------------------------------------
-# Logging konfigurieren
-# ------------------------------------------------
+# ------------------------------------------------------------
+# Technischer Logger mit Zeitstempel
+# ------------------------------------------------------------
 logging.basicConfig(
-	format="%(asctime)s | %(levelname)s | %(message)s",
-	level=logging.INFO
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    force=True
 )
+
 logger = logging.getLogger(__name__)
 
-_last_timings = {}
+# ------------------------------------------------------------
+# Timer-Dekorator für Messungen
+# ------------------------------------------------------------
+timings = {}
 
-# ------------------------------------------------
-# Dekoratoren
-# ------------------------------------------------
-def my_timer(func):
-	"""Misst die Laufzeit einer Funktion und speichert sie."""
-	@wraps(func)
-	def wrapper(*args, **kwargs):
-		start = time.time()
-		result = func(*args, **kwargs)
-		elapsed = time.time() - start
-		_last_timings[func.__name__] = elapsed
-		logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
-		return result
-	return wrapper
-
-
-def my_logger(func):
-	"""Protokolliert Start, Ende und Status einer Funktion."""
-	@wraps(func)
-	def wrapper(*args, **kwargs):
-		logger.info(f"Started '{func.__name__}'")
-		logger.info(f"Running '{func.__name__}' ...")
-		try:
-			result = func(*args, **kwargs)
-			logger.info(f"Completed '{func.__name__}' successfully.")
-			return result
-		except Exception as e:
-			logger.error(f"Error in '{func.__name__}': {e}")
-			raise
-	return wrapper
+def mytimer(func):
+    def wrapper(*args, **kwargs):
+        logger.info(f"Started '{func.__name__}'")
+        logger.info(f"Running '{func.__name__}' ...")
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        elapsed = end - start
+        timings[func.__name__] = elapsed
+        logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
+        logger.info(f"Completed '{func.__name__}' successfully.")
+        return result
+    return wrapper
 
 
-def get_last_timing(func_name):
-	"""Gibt die zuletzt gemessene Laufzeit zurück."""
-	return _last_timings.get(func_name, None)
+def get_last_timing(func_name: str):
+    return timings.get(func_name, None)
 
-
-# ------------------------------------------------
+# ------------------------------------------------------------
 # Hauptfunktionen
-# ------------------------------------------------
-@my_logger
-@my_timer
-def load_data(file_path):
-	"""CSV-Datensatz laden."""
-	df = pd.read_csv(file_path)
-	return df
+# ------------------------------------------------------------
+
+@mytimer
+def load_data(path: str):
+    df = pd.read_csv(path)
+    return df
 
 
-@my_logger
-@my_timer
-def train_model(df):
-	"""Trainiert das logistische Regressionsmodell."""
-	X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
-	y = df["Clicked on Ad"]
-	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-	model = LogisticRegression(max_iter=1000, random_state=42)
-	model.fit(X_train, y_train)
-	return model, X_test, y_test
+@mytimer
+def train_model(df: pd.DataFrame):
+    X = df[['Daily Time Spent on Site', 'Age', 'Area Income',
+            'Daily Internet Usage', 'Male']]
+    y = df['Clicked on Ad']
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42
+    )
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train)
+    return model, X_test, y_test
 
 
-@my_logger
-@my_timer
+@mytimer
 def evaluate_model(model, X_test, y_test):
-	"""Bewertet das Modell mit Testdaten (gibt Ausgabetext zurück statt print)."""
-	y_pred = model.predict(X_test)
-	acc = accuracy_score(y_test, y_pred)
-	cm = confusion_matrix(y_test, y_pred)
-	report = classification_report(y_test, y_pred)
-
-	output = (
-		f"Genauigkeit (Accuracy): {acc:.2f}\n"
-		f"Confusion Matrix:\n{cm}\n\n"
-		f"Klassifikationsbericht (Auszug):\n{report}\n"
-		f"Final Accuracy: {acc:.2f}\n"
-	)
-	return acc, output
-
-
-# ------------------------------------------------
-# Hauptprogramm
-# ------------------------------------------------
-if __name__ == "__main__":
-	df = load_data("advertising.csv")
-	model, X_test, y_test = train_model(df)
-	acc, output = evaluate_model(model, X_test, y_test)
-	print("\n" + output)
+    y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+    # Text an Tests zurückgeben, nicht drucken
+    metrics_text = (
+        f"Genauigkeit (Accuracy): {acc:.2f}\n"
+        f"Confusion Matrix:\n{cm}\n\n"
+        f"Klassifikationsbericht (Auszug):\n{report}\n"
+        f"Final Accuracy: {acc:.2f}\n"
+    )
+    return acc, metrics_text

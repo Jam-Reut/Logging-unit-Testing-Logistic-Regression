@@ -3,7 +3,7 @@ import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 # ------------------------------------------------------------
-# Technischer Logger (mit Zeitstempel)
+# Logger mit Zeitstempel
 # ------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 # ------------------------------------------------------------
-# Zweiter Logger (ohne Zeitstempel für Marker)
+# Plain Logger ohne Zeitstempel (für Header & Marker)
 # ------------------------------------------------------------
 plain_logger = logging.getLogger("plain")
 plain_handler = logging.StreamHandler()
@@ -27,7 +27,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        # Marker und Header ganz am Anfang des Testlaufs
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
@@ -38,7 +37,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
         model, X_test, y_test = train_model(df)
         acc, metrics_output = evaluate_model(model, X_test, y_test)
 
+        # Metriken direkt nach Header ausgeben
         print(metrics_output)
+        self.assertGreaterEqual(acc, 0.9)
+
         plain_logger.info("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
@@ -78,12 +80,5 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # Überschrift VOR den Unittests ausgeben
     plain_logger.info("\n=== Starte Unit-Tests ===\n")
-
-    # 👉 Hier der Header für TESTFALL 1 direkt am Anfang
-    plain_logger.info("=" * 70)
-    plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
-    plain_logger.info("=" * 70 + "\n")
-
     unittest.main(argv=[""], exit=False)
