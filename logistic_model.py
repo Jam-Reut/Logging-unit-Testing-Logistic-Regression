@@ -80,29 +80,26 @@ def train_model(df):
 @my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
-	"""Bewertet das Modell mit Testdaten."""
+	"""Bewertet das Modell mit Testdaten (gibt Ausgabetext zurück statt print)."""
 	y_pred = model.predict(X_test)
 	acc = accuracy_score(y_test, y_pred)
 	cm = confusion_matrix(y_test, y_pred)
+	report = classification_report(y_test, y_pred)
 
-	# --- Fachliche Ergebnisse zuerst ---
-	print()
-	print(f"Genauigkeit (Accuracy): {acc:.2f}")
-	print("Confusion Matrix:")
-	print(cm)
-	print("\nKlassifikationsbericht (Auszug):")
-	print(classification_report(y_test, y_pred))
-	print(f"\nFinal Accuracy: {acc:.2f}")
-
-	return acc
+	output = (
+		f"Genauigkeit (Accuracy): {acc:.2f}\n"
+		f"Confusion Matrix:\n{cm}\n\n"
+		f"Klassifikationsbericht (Auszug):\n{report}\n"
+		f"Final Accuracy: {acc:.2f}\n"
+	)
+	return acc, output
 
 
 # ------------------------------------------------
 # Hauptprogramm
 # ------------------------------------------------
 if __name__ == "__main__":
-	#print("\n=== Starte logistic_model.py ===\n")
-
 	df = load_data("advertising.csv")
 	model, X_test, y_test = train_model(df)
-	acc = evaluate_model(model, X_test, y_test)
+	acc, output = evaluate_model(model, X_test, y_test)
+	print("\n" + output)
