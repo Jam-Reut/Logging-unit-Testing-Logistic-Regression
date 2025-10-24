@@ -28,6 +28,7 @@ def mytimer(func):
 def get_last_timing(func_name):
     return timing_info.get(func_name, None)
 
+
 # ------------------------------------------------------------
 # Funktionen für Daten, Training und Bewertung
 # ------------------------------------------------------------
@@ -56,8 +57,7 @@ def evaluate_model(model, X_test, y_test):
     conf_matrix = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred)
 
-    # Ausgabe im gewünschten Design:
-    #plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+    # --- Ergebnisdarstellung im gewünschten Design ---
     plain_logger.info(f"Genauigkeit (Accuracy): {acc:.2f}")
     plain_logger.info("Confusion Matrix:")
     plain_logger.info(f"{conf_matrix}\n")

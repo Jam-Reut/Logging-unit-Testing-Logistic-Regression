@@ -27,20 +27,22 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        #plain_logger.info("\n=== Starte Unit-Tests ===\n")
+        plain_logger.info("\n=== Starte Unit-Tests ===\n")
+
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
-        plain_logger.info()
-        plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
-        acc = evaluate_model(model, X_test, y_test)
 
+        # Marker VOR den Logs der evaluate-Funktion
+        plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
+
+        acc = evaluate_model(model, X_test, y_test)
         self.assertGreaterEqual(acc, 0.9)
 
-        plain_logger.info("Ergebnis: TESTFALL 1 PASSED\n")
+        plain_logger.info("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
