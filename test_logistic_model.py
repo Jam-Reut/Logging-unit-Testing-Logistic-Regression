@@ -20,40 +20,25 @@ plain.propagate = False
 
 class TestLogisticRegressionModel(unittest.TestCase):
 
-    # ------------------------------------------------
-    # TESTFALL 1: predict(): Vorhersagefunktion
-    # ------------------------------------------------
     def test_1_predict_function(self):
-        # Kopfbereich
-        #plain.info("\n=== Starte Unit-Tests ===\n")
+        plain.info("\n=== Starte Unit-Tests ===\n")
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain.info("=" * 70 + "\n")
-        #plain.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
-        # Logs temporär stumm – wir wollen zuerst Metriken
-        root_logger = logging.getLogger()
-        prev_level = root_logger.level
-        root_logger.setLevel(logging.WARNING)
-        try:
-            df = load_data("advertising.csv")
-            model, X_test, y_test = train_model(df)
-            acc = evaluate_model(model, X_test, y_test)
-        finally:
-            root_logger.setLevel(prev_level)
+        # Daten laden & trainieren
+        df = load_data("advertising.csv")
+        model, X_test, y_test = train_model(df)
 
-        # Danach: Logs der Abläufe (sichtbar, aber keine doppelte Metrik)
-        logging.getLogger().setLevel(logging.INFO)
-        load_data("advertising.csv")
-        train_model(df)
+        # --- evaluate_model liefert Metriken (ohne Zeitstempel) ---
+        acc = evaluate_model(model, X_test, y_test)
 
-        # Ergebniszeile mit Leerzeile davor
+        # Danach technische Logs
+        plain.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+
         self.assertGreaterEqual(acc, 0.9)
-        plain.info("\nErgebnis: TESTFALL 1 PASSED\n")
+        plain.info("Ergebnis: TESTFALL 1 PASSED\n")
 
-    # ------------------------------------------------
-    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
-    # ------------------------------------------------
     def test_2_train_runtime(self):
         plain.info("=" * 70)
         plain.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")

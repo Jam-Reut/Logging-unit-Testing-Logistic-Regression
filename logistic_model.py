@@ -5,7 +5,7 @@ import logging
 import time
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 
 # --- technischer Logger (Zeitstempel) für Mess-Logs ---
 logging.basicConfig(
@@ -15,8 +15,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Laufzeiten
 _TIMINGS = {}
+
 
 # === Bezeichnungen wie gefordert beibehalten ===
 def mytimer(func):
@@ -31,6 +31,7 @@ def mytimer(func):
         logger.info(f"Completed '{func.__name__}' successfully.")
         return result
     return wrapper
+
 
 def get_last_timing(func_name: str):
     return _TIMINGS.get(func_name, None)
@@ -53,18 +54,15 @@ def train_model(df: pd.DataFrame):
     return model, X_test, y_test
 
 
-# ⚠️ KEIN Dekorator hier – keine Zeitstempel vor den Metriken
 @mytimer
 def evaluate_model(model, X_test, y_test):
-    import logging
-    logger = logging.getLogger()
-
-    # Keine Zeitstempel für Metriken selbst
+    """Hybrid: Technische Logs mit Zeitstempel, Metriken ohne."""
     plain = logging.getLogger("plain")
+
+    # --- Metriken ohne Zeitstempel ---
     plain.info("")
     plain.info("Genauigkeit (Accuracy): {:.2f}".format(model.score(X_test, y_test)))
 
-    from sklearn.metrics import classification_report, confusion_matrix
     y_pred = model.predict(X_test)
     cm = confusion_matrix(y_test, y_pred)
     plain.info("Confusion Matrix:")
@@ -78,4 +76,3 @@ def evaluate_model(model, X_test, y_test):
     plain.info("")
 
     return model.score(X_test, y_test)
-
