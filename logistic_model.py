@@ -1,94 +1,97 @@
-# logistic_model.py
-
-import pandas as pd
 import logging
+import pandas as pd
 import time
-from sklearn.model_selection import train_test_split
+from functools import wraps
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# --- technischer Logger (mit Zeitstempel) ---
+
+# ------------------------------------------------------------
+# Logging-Setup (technische Logs mit Zeitstempel)
+# ------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
-logger = logging.getLogger(__name__)
+plain_logger = logging.getLogger("plain")
+plain_handler = logging.StreamHandler()
+plain_handler.setFormatter(logging.Formatter("%(message)s"))
+plain_logger.addHandler(plain_handler)
+plain_logger.propagate = False
 
-_TIMINGS = {}
-_LAST_METRICS_TEXT = ""  # wird von evaluate_model gesetzt
 
-
-# === Bezeichnungen beibehalten ===
+# ------------------------------------------------------------
+# Timer-Decorator für technische Logs
+# ------------------------------------------------------------
 def mytimer(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
+        logging.info(f"Started '{func.__name__}'")
+        logging.info(f"Running '{func.__name__}' ...")
         start = time.time()
-        logger.info(f"Started '{func.__name__}'")
-        logger.info(f"Running '{func.__name__}' ...")
         result = func(*args, **kwargs)
-        elapsed = time.time() - start
-        _TIMINGS[func.__name__] = elapsed
-        logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
-        logger.info(f"Completed '{func.__name__}' successfully.")
+        end = time.time()
+        duration = end - start
+        logging.info(f"'{func.__name__}' executed in {duration:.4f} sec")
+        logging.info(f"Completed '{func.__name__}' successfully.")
+        wrapper.last_timing = duration
         return result
+    wrapper.last_timing = 0
     return wrapper
 
-def get_last_timing(func_name: str):
-    return _TIMINGS.get(func_name, None)
 
-def get_last_metrics_text() -> str:
-    return _LAST_METRICS_TEXT
-
-
+# ------------------------------------------------------------
+# Modellfunktionen
+# ------------------------------------------------------------
 @mytimer
-def load_data(csv_path: str):
-    return pd.read_csv(csv_path)
+def load_data(filename: str):
+    df = pd.read_csv(filename)
+    return df
 
 
 @mytimer
 def train_model(df: pd.DataFrame):
-    X = df[['Daily Time Spent on Site', 'Age', 'Area Income', 'Daily Internet Usage']]
-    y = df['Clicked on Ad']
+    X = df[["Daily Time Spent on Site", "Age", "Area Income",
+            "Daily Internet Usage"]]
+    y = df["Clicked on Ad"]
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
+        X, y, test_size=0.3, random_state=42)
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
 
+@mytimer
 def evaluate_model(model, X_test, y_test):
-    """
-    Logging und Metriken werden NICHT vermischt:
-    - Technische Logs (Started/Running/Executed/Completed) erscheinen zusammen.
-    - Metriken werden gesammelt und vom Test NACH dem Log-Block ausgegeben.
-    """
-    global _LAST_METRICS_TEXT
-
-    # Technische Logs manuell (ohne Decorator), damit der gesamte Log-Block zusammenbleibt
-    start = time.time()
-    logger.info("Started 'evaluate_model'")
-    logger.info("Running 'evaluate_model' ...")
-
-    # --- Metriken berechnen, Text puffern (noch nicht drucken) ---
+    """Bewertet das Modell und gibt die Metriken aus (direkt nach Technik-Logs)."""
     y_pred = model.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred)
 
-    _LAST_METRICS_TEXT = (
-        "Genauigkeit (Accuracy): {:.2f}\n"
-        "Confusion Matrix:\n"
-        "{}\n\n"
-        "Klassifikationsbericht (Auszug):\n"
-        "{}\n\n"
-        "Final Accuracy: {:.2f}\n"
-    ).format(acc, cm, report, acc)
-
-    # Abschluss-Logs
-    elapsed = time.time() - start
-    _TIMINGS["evaluate_model"] = elapsed
-    logger.info(f"'evaluate_model' executed in {elapsed:.4f} sec")
-    logger.info("Completed 'evaluate_model' successfully.")
+    # Alle Metriken als Klartext-Ausgabe
+    plain_logger.info("")
+    plain_logger.info(f"Genauigkeit (Accuracy): {acc:.2f}")
+    plain_logger.info("Confusion Matrix:")
+    plain_logger.info(f"{cm}\n")
+    plain_logger.info("Klassifikationsbericht (Auszug):")
+    plain_logger.info(report)
+    plain_logger.info(f"\nFinal Accuracy: {acc:.2f}\n")
 
     return acc
+
+
+# ------------------------------------------------------------
+# Helper für Unit-Test
+# ------------------------------------------------------------
+def get_last_timing(func_name: str):
+    for f in [load_data, train_model, evaluate_model]:
+        if f.__name__ == func_name:
+            return getattr(f, "last_timing", 0)
+    return 0
+
+
+if __name__ == "__main__":
+    plain_logger.info("=== Starte logistic_model.py ===\n")
