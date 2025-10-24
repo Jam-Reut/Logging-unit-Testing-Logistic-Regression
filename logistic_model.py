@@ -1,6 +1,6 @@
 import unittest
 import logging
-from logistic_model import load_data, train_model, evaluate_model, get_last_timing
+#from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 # ================================================================
 # LOGGING-KONFIGURATION
