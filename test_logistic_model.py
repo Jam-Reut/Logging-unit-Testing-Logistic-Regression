@@ -72,4 +72,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
             plain.info("Ergebnis: TESTFALL 2 PASSED ✅\n")
         except AssertionError:
             plain.info("❌ Laufzeit überschreitet das Limit!\n")
-            plain.info("Ergebnis:
+            plain.info("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            raise
+
+
+if __name__ == "__main__":
+    unittest.main(argv=[""], exit=False)
