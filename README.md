@@ -25,7 +25,7 @@ Projektstruktur:
 
 ---
 
-=== Logging und Timer ===
+Logging und Timer:
 - **`my_logger`**: schreibt Start, Ende und Ergebnis jeder Funktion ins Logfile und in die Konsole.  
 - **`my_timer`**: misst die Laufzeit jeder Funktion und loggt diese.  
 
@@ -38,7 +38,7 @@ Prüft:
 
 Beispielausgabe:
 
-=== Modellevaluierung ===
+Modellevaluierung:
   Genauigkeit (Accuracy): 0.97
   Confusion Matrix:
 [[143   3]
@@ -53,7 +53,7 @@ Prüft:
 
 Beispielausgabe:
 
-=== Laufzeit-Analyse ===
+Laufzeit-Analyse:
 - Referenzlaufzeit: 0.3000 sec
 - Aktuelle Laufzeit: 0.2903 sec
 - Erlaubtes Limit (120 %): 0.3600 sec
