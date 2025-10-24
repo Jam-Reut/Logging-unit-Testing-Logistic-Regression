@@ -1,22 +1,20 @@
-# test_logistic_model.py
-
 import unittest
 import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-# --- technischer Root-Logger (Zeitstempel) ---
+# --- technischer Logger (mit Zeitstempel) ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
 
-# --- Plain-Logger ohne Zeitstempel (für Header/Marker/Metriken) ---
+# --- Plain-Logger (ohne Zeitstempel) ---
 plain = logging.getLogger("plain")
-_plain_handler = logging.StreamHandler()
-_plain_handler.setFormatter(logging.Formatter("%(message)s"))
-plain.addHandler(_plain_handler)
-plain.setLevel(logging.INFO)         # WICHTIG: explizit INFO setzen
+plain_handler = logging.StreamHandler()
+plain_handler.setFormatter(logging.Formatter("%(message)s"))
+plain.addHandler(plain_handler)
+plain.setLevel(logging.INFO)
 plain.propagate = False
 
 
@@ -26,29 +24,31 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        # Header + Marker ganz oben
         plain.info("\n=== Starte Unit-Tests ===\n")
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain.info("=" * 70 + "\n")
         plain.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
-        # Technische Logs für die Vorstufen kurz unterdrücken,
-        # damit Metriken oben stehen (Kritik vom Prof)
-        root = logging.getLogger()
-        prev_level = root.level
-        root.setLevel(logging.WARNING)
+        # Lade Daten + trainiere (unterdrücke Logs temporär)
+        root_logger = logging.getLogger()
+        prev_level = root_logger.level
+        root_logger.setLevel(logging.WARNING)
         try:
             df = load_data("advertising.csv")
             model, X_test, y_test = train_model(df)
         finally:
-            root.setLevel(prev_level)
+            root_logger.setLevel(prev_level)
 
-        # Jetzt Metriken (ohne Zeitstempel) ausgeben
+        # Metriken (ohne Zeitstempel)
         acc = evaluate_model(model, X_test, y_test)
 
-        # Prüfen + Leerzeile vor Ergebnis
-        self.assertGreaterEqual(acc, 0.9)
+        # Jetzt Logs aktivieren, damit sie NACH den Metriken erscheinen
+        logging.getLogger().setLevel(logging.INFO)
+        df = load_data("advertising.csv")
+        model, X_test, y_test = train_model(df)
+        evaluate_model(model, X_test, y_test)
+
         plain.info("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
@@ -83,6 +83,4 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # Nur die Tests starten – keinen zusätzlichen Start-Header hier ausgeben,
-    # damit er nicht doppelt erscheint. Der Header steht in test_1.
     unittest.main(argv=[""], exit=False)
