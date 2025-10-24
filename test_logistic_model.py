@@ -3,7 +3,7 @@ import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 # ------------------------------------------------------------
-# Logger mit Zeitstempel
+# Logger
 # ------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
@@ -11,9 +11,6 @@ logging.basicConfig(
     force=True
 )
 
-# ------------------------------------------------------------
-# Plain Logger ohne Zeitstempel (für Header & Marker)
-# ------------------------------------------------------------
 plain_logger = logging.getLogger("plain")
 plain_handler = logging.StreamHandler()
 plain_handler.setFormatter(logging.Formatter("%(message)s"))
@@ -24,9 +21,10 @@ plain_logger.propagate = False
 class TestLogisticRegressionModel(unittest.TestCase):
 
     # ------------------------------------------------
-    # TESTFALL 1: predict(): Vorhersagefunktion
+    # TESTFALL 1
     # ------------------------------------------------
     def test_1_predict_function(self):
+        # Header ganz oben (vor Metriken)
         plain_logger.info("=" * 70)
         plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
         plain_logger.info("=" * 70 + "\n")
@@ -37,14 +35,14 @@ class TestLogisticRegressionModel(unittest.TestCase):
         model, X_test, y_test = train_model(df)
         acc, metrics_output = evaluate_model(model, X_test, y_test)
 
-        # Metriken direkt nach Header ausgeben
+        # Metriken direkt unter dem Header
         print(metrics_output)
         self.assertGreaterEqual(acc, 0.9)
 
         plain_logger.info("\nErgebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
-    # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
+    # TESTFALL 2
     # ------------------------------------------------
     def test_2_train_runtime(self):
         plain_logger.info("=" * 70)
@@ -59,7 +57,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         ref_time = get_last_timing("train_model")
         plain_logger.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
-        plain_logger.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
+        plain_logger.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
         plain_logger.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
@@ -81,5 +79,4 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 if __name__ == "__main__":
     plain_logger.info("\n=== Starte Unit-Tests ===\n")
-    print("\n=== TESTFALL 1: predict(): Vorhersagefunktion ===\n")
     unittest.main(argv=[""], exit=False)

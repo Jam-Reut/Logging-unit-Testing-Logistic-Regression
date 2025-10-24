@@ -14,11 +14,10 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
-
 logger = logging.getLogger(__name__)
 
 # ------------------------------------------------------------
-# Timer-Dekorator für Messungen
+# Timer-Dekorator
 # ------------------------------------------------------------
 timings = {}
 
@@ -40,10 +39,10 @@ def mytimer(func):
 def get_last_timing(func_name: str):
     return timings.get(func_name, None)
 
+
 # ------------------------------------------------------------
 # Hauptfunktionen
 # ------------------------------------------------------------
-
 @mytimer
 def load_data(path: str):
     df = pd.read_csv(path)
@@ -69,9 +68,7 @@ def evaluate_model(model, X_test, y_test):
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     report = classification_report(y_test, y_pred)
-    # Text an Tests zurückgeben, nicht drucken
     metrics_text = (
-        f"TESTFALL 1: predict(): Vorhersagefunktion\n"
         f"Genauigkeit (Accuracy): {acc:.2f}\n"
         f"Confusion Matrix:\n{cm}\n\n"
         f"Klassifikationsbericht (Auszug):\n{report}\n"
