@@ -1,94 +1,91 @@
+import unittest
 import logging
-import pandas as pd
-import time
-from functools import wraps
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-
+from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 # ------------------------------------------------------------
-# Technisches Logging (mit Zeitstempel)
+# Logger-Konfiguration
 # ------------------------------------------------------------
+# Verhindert doppelte Handler
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
 
-plain_logger = logging.getLogger("plain")
+# Nur EIN Plain-Logger ohne Verdopplung
+plain = logging.getLogger("plain")
+plain.handlers.clear()
 plain_handler = logging.StreamHandler()
 plain_handler.setFormatter(logging.Formatter("%(message)s"))
-plain_logger.addHandler(plain_handler)
-plain_logger.propagate = False
+plain.addHandler(plain_handler)
+plain.propagate = False
 
 
 # ------------------------------------------------------------
-# Timer-Decorator für technische Logs
+# Unit-Testklasse
 # ------------------------------------------------------------
-def mytimer(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        logging.info(f"Started '{func.__name__}'")
-        logging.info(f"Running '{func.__name__}' ...")
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        duration = end - start
-        logging.info(f"'{func.__name__}' executed in {duration:.4f} sec")
-        logging.info(f"Completed '{func.__name__}' successfully.")
-        wrapper.last_timing = duration
-        return result
-    wrapper.last_timing = 0
-    return wrapper
+class TestLogisticRegressionModel(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        # Einmaliger Referenzlauf für Laufzeitvergleich
+        df = load_data("advertising.csv")
+        train_model(df)
+        cls.REFERENCE_TIME = get_last_timing("train_model")
 
-# ------------------------------------------------------------
-# Modellfunktionen
-# ------------------------------------------------------------
-@mytimer
-def load_data(filename: str):
-    df = pd.read_csv(filename)
-    return df
+    # ------------------------------------------------
+    # TESTFALL 1 – Vorhersageprüfung
+    # ------------------------------------------------
+    def test_1_predict_function(self):
+        plain.info("\n=== Starte Unit-Tests ===\n")
+        plain.info("=" * 70)
+        plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
+        plain.info("=" * 70 + "\n")
 
+        df = load_data("advertising.csv")
+        model, X_test, y_test = train_model(df)
 
-@mytimer
-def train_model(df: pd.DataFrame):
-    X = df[["Daily Time Spent on Site", "Age", "Area Income", "Daily Internet Usage"]]
-    y = df["Clicked on Ad"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_train, y_train)
-    return model, X_test, y_test
+        acc, metrics_text = evaluate_model(model, X_test, y_test)
 
+        # Technische Logs und Metriken gemeinsam
+        plain.info(metrics_text)
 
-@mytimer
-def evaluate_model(model, X_test, y_test):
-    """Berechnet die Modellmetriken und gibt sie als formatierten Text zurück."""
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
+        self.assertGreaterEqual(acc, 0.9)
+        plain.info("Ergebnis: TESTFALL 1 PASSED ✅\n")
 
-    metrics_text = (
-        f"\nGenauigkeit (Accuracy): {acc:.2f}\n"
-        f"Confusion Matrix:\n{cm}\n\n"
-        f"Klassifikationsbericht (Auszug):\n{report}\n"
-        f"Final Accuracy: {acc:.2f}\n"
-    )
+    # ------------------------------------------------
+    # TESTFALL 2 – Laufzeitprüfung
+    # ------------------------------------------------
+    def test_2_train_runtime(self):
+        plain.info("=" * 70)
+        plain.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        plain.info("=" * 70 + "\n")
 
-    return acc, metrics_text
+        df = load_data("advertising.csv")
+        train_model(df)
+        runtime = get_last_timing("train_model")
 
+        ref_time = self.REFERENCE_TIME
+        limit = ref_time * 1.2
 
-# ------------------------------------------------------------
-# Helper für Unit-Test
-# ------------------------------------------------------------
-def get_last_timing(func_name: str):
-    for f in [load_data, train_model, evaluate_model]:
-        if f.__name__ == func_name:
-            return getattr(f, "last_timing", 0)
-    return 0
+        plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
+        plain.info("Laufzeitanalyse:")
+        plain.info(f" - Referenzlaufzeit: {ref_time:.4f} sec")
+        plain.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
+        plain.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
+
+        try:
+            self.assertLessEqual(runtime, limit)
+            plain.info("Laufzeit liegt innerhalb der Toleranz.\n")
+            plain.info("Ergebnis: TESTFALL 2 PASSED ✅\n")
+        except AssertionError:
+            plain.info("❌ Laufzeit überschreitet das Limit!\n")
+            plain.info("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            raise
 
 
 if __name__ == "__main__":
-    plain_logger.info("=== Starte logistic_model.py ===\n")
+    unittest.main(argv=[""], exit=False)
