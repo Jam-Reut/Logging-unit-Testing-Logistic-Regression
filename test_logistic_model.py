@@ -81,5 +81,5 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
 if __name__ == "__main__":
     plain_logger.info("\n=== Starte Unit-Tests ===\n")
-    plain_logger.info("\n=== TESTFALL 1: predict(): Vorhersagefunktion ===\n")
+    print("\n=== TESTFALL 1: predict(): Vorhersagefunktion ===\n")
     unittest.main(argv=[""], exit=False)
