@@ -29,7 +29,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        plain.info("\n=== Starte Unit-Tests ===\n")
+        #plain.info("\n=== Starte Unit-Tests ===\n")
 
         plain.info("=" * 70)
         plain.info("TESTFALL 1: predict(): Vorhersagefunktion")
@@ -65,13 +65,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
         #plain.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
         #plain.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
-        plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
+        plain.info(" ")
+		plain.info("[TEST 2 LOGGING: aktuelle Laufzeit]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
         #plain.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
 
         limit = ref_time * 1.2
-        plain.info("Laufzeitanalyse:")
+        plain.info(" ")
+		plain.info("Laufzeitanalyse:")
         plain.info(f" - Referenzlaufzeit: {ref_time:.4f} sec")
         plain.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         plain.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
