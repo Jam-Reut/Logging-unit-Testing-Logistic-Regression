@@ -5,12 +5,19 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 # ------------------------------------------------------------
 # Logger-Konfiguration
 # ------------------------------------------------------------
+# Verhindert doppelte Handler
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
+
+# Nur EIN Plain-Logger ohne Verdopplung
 plain = logging.getLogger("plain")
+plain.handlers.clear()
 plain_handler = logging.StreamHandler()
 plain_handler.setFormatter(logging.Formatter("%(message)s"))
 plain.addHandler(plain_handler)
@@ -43,7 +50,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         acc, metrics_text = evaluate_model(model, X_test, y_test)
 
-        # Technische Logs und Metriken erscheinen zusammen
+        # Technische Logs und Metriken gemeinsam
         plain.info(metrics_text)
 
         self.assertGreaterEqual(acc, 0.9)
