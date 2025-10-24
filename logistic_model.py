@@ -54,6 +54,7 @@ def train_model(df: pd.DataFrame):
 
 
 # ⚠️ KEIN Dekorator hier – keine Zeitstempel vor den Metriken
+@mytimer
 def evaluate_model(model, X_test, y_test):
     """Druckt Metriken über 'plain'-Logger (ohne Zeitstempel) und gibt Accuracy zurück."""
     plain = logging.getLogger("plain")
