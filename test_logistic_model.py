@@ -41,7 +41,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         acc = evaluate_model(model, X_test, y_test)
 
         # Dann gesammelt und in einem Stück die Metriken ausgeben
-        plain.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        #plain.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
         plain.info(get_last_metrics_text())
 
         self.assertGreaterEqual(acc, 0.9)
@@ -63,7 +63,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         ref_time = get_last_timing("train_model")
         plain.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {ref_time:.4f} sec]\n")
 
-        plain.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
+        plain.info("[TEST 2 LOGGING: aktueller Lauf beginnt]\n")
         train_model(df)
         runtime = get_last_timing("train_model")
         plain.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
