@@ -2,12 +2,24 @@ import unittest
 import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-# Technische Logs mit Zeitstempel
+# ------------------------------------------------------------
+# Technischer Logger (mit Zeitstempel)
+# ------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     force=True
 )
+
+# ------------------------------------------------------------
+# Zusätzlicher "Plain"-Logger ohne Zeitstempel
+# ------------------------------------------------------------
+plain_logger = logging.getLogger("plain")
+plain_handler = logging.StreamHandler()
+plain_handler.setFormatter(logging.Formatter("%(message)s"))
+plain_logger.addHandler(plain_handler)
+plain_logger.propagate = False
+
 
 class TestLogisticRegressionModel(unittest.TestCase):
 
@@ -16,69 +28,66 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     @classmethod
     def setUpClass(cls):
-        print("\n" + "─" * 70)
-        print("[TEST 2 LOGGING: Referenzlauf (einmalig vor allen Tests)]")
-        print("─" * 70 + "\n")
+        plain_logger.info("\n" + "─" * 70)
+        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor allen Tests)]")
+        plain_logger.info("─" * 70 + "\n")
 
-        # Marker VOR dem Referenzlauf -> erscheint vor den train_model-Logs
-        print("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
+        plain_logger.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
 
         df = load_data("advertising.csv")
-        train_model(df)  # erzeugt die technischen Logs mit Zeitstempel
+        train_model(df)
 
-        # Marker NACH dem Referenzlauf -> erscheint nach den train_model-Logs
         cls.REFERENCE_TIME = get_last_timing("train_model")
-        print(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {cls.REFERENCE_TIME:.4f} sec]\n")
+        plain_logger.info(f"[TEST 2 LOGGING: Referenzlauf abgeschlossen – {cls.REFERENCE_TIME:.4f} sec]\n")
 
     # ------------------------------------------------
     # TESTFALL 1: predict(): Vorhersagefunktion
     # ------------------------------------------------
     def test_1_predict_function(self):
-        print("=" * 70)
-        print("TESTFALL 1: predict(): Vorhersagefunktion")
-        print("=" * 70 + "\n")
-        print("[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        plain_logger.info("=" * 70)
+        plain_logger.info("TESTFALL 1: predict(): Vorhersagefunktion")
+        plain_logger.info("=" * 70 + "\n")
+        plain_logger.info("[TEST 1 LOGGING: Vorhersageprüfung]\n")
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         acc = evaluate_model(model, X_test, y_test)
 
         self.assertGreaterEqual(acc, 0.9)
-        print("\nErgebnis: TESTFALL 1 PASSED\n")
+        plain_logger.info("Ergebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
     # TESTFALL 2: fit(): Laufzeit der Trainingsfunktion
     # ------------------------------------------------
     def test_2_train_runtime(self):
-        print("=" * 70)
-        print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        print("=" * 70 + "\n")
+        plain_logger.info("=" * 70)
+        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        plain_logger.info("=" * 70 + "\n")
 
         df = load_data("advertising.csv")
 
-        # *** NUR EIN Trainingslauf im Test ***
-        print("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
-        train_model(df)  # erzeugt technische Logs
+        plain_logger.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
+        train_model(df)
         runtime = get_last_timing("train_model")
-        print(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
+        plain_logger.info(f"[TEST 2 LOGGING: aktueller Lauf abgeschlossen – {runtime:.4f} sec]\n")
 
-        # Analyse ggü. EINMALIGER Referenzzeit aus setUpClass
         ref_time = self.REFERENCE_TIME
         limit = ref_time * 1.2
 
-        print("Laufzeitanalyse:")
-        print(f" - Referenzlaufzeit: {ref_time:.4f} sec")
-        print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
+        plain_logger.info("Laufzeitanalyse:")
+        plain_logger.info(f" - Referenzlaufzeit: {ref_time:.4f} sec")
+        plain_logger.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
+        plain_logger.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
         if runtime <= limit:
-            print("Laufzeit liegt innerhalb der Toleranz.\n")
+            plain_logger.info("Laufzeit liegt innerhalb der Toleranz.\n")
         else:
-            print("❌ Laufzeit überschreitet das Limit!\n")
+            plain_logger.info("❌ Laufzeit überschreitet das Limit!\n")
 
         self.assertLessEqual(runtime, limit)
-        print("Ergebnis: TESTFALL 2 PASSED\n")
+        plain_logger.info("Ergebnis: TESTFALL 2 PASSED\n")
+
 
 if __name__ == "__main__":
-    print("\n=== Starte Unit-Tests ===\n")
+    plain_logger.info("\n=== Starte Unit-Tests ===\n")
     unittest.main(argv=[""], exit=False)
