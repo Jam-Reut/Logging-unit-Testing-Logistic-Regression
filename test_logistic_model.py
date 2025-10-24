@@ -37,7 +37,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         self.assertGreaterEqual(acc, 0.9)
         # Marker NACH der Accuracy-Ausgabe
-        plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
+        #plain_logger.info("\n[TEST 1 LOGGING: Vorhersageprüfung]\n")
         plain_logger.info("Ergebnis: TESTFALL 1 PASSED\n")
 
     # ------------------------------------------------
@@ -46,7 +46,8 @@ class TestLogisticRegressionModel(unittest.TestCase):
     def test_2_train_runtime(self):
         # Referenzlaufmarkierungen VOR Testfall 2
         plain_logger.info("\n" + "─" * 70)
-        plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
+        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+		plain_logger.info("[TEST 2 LOGGING: Referenzlauf (einmalig vor TESTFALL 2)]")
         plain_logger.info("─" * 70 + "\n")
 
         plain_logger.info("[TEST 2 LOGGING: Referenzlauf beginnt]\n")
@@ -57,7 +58,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # Jetzt startet der eigentliche Testfall
         plain_logger.info("=" * 70)
-        plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
+        #plain_logger.info("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         plain_logger.info("=" * 70 + "\n")
 
         plain_logger.info("[TEST 2 LOGGING: aktueller Lauf (im Unittest) – beginnt]\n")
