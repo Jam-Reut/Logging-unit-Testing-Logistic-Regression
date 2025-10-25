@@ -67,7 +67,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
             print(f"✅  Aktuelle Laufzeit ({runtime:.4f} sec) liegt unter dem Limit ({limit:.4f} sec).\n")
             #print("Laufzeit liegt innerhalb der Toleranz.\n")
             print("Ergebnis: TESTFALL 2 PASSED ✅\n")
-			print ("rheinfolge")
+            print ("rheinfolge")
 
 
 if __name__ == "__main__":
