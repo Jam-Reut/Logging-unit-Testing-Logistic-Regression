@@ -71,11 +71,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         if passed:
             print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
             print("Ergebnis: TESTFALL 2 PASSED ✅\n")
-			print ("logging: testfall 1 + Testfall 1 :")
+            print ("logging: testfall 1 + Testfall 1 :")
         else:
             print("❌ Laufzeit überschreitet das Limit!\n")
             print("Ergebnis: TESTFALL 2 FAILED ❌\n")
-			print ("logging: testfall 1 + Testfall 1 : ")
+            print ("logging: testfall 1 + Testfall 1 : ")
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
                 f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
