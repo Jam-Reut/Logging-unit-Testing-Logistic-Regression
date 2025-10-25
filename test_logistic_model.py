@@ -8,6 +8,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Referenzlauf für Laufzeitmessung."""
+        print("=== Starte Unit-Tests ===\n")
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
@@ -16,16 +17,15 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # TESTFALL 1 – Vorhersageprüfung
     # ----------------------------------------------------------
     def test_1_predict(self):
-        print("=== Starte Unit-Tests ===\n")
         print("=" * 70)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
         print("=" * 70 + "\n")
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
-        acc, metrics_text = evaluate_model(model, X_test, y_test)
+        acc, _ = evaluate_model(model, X_test, y_test)
 
-        print(metrics_text)
+        # Nur prüfen, keine doppelte Ausgabe
         self.assertGreaterEqual(acc, 0.9)
         print("Ergebnis: TESTFALL 1 PASSED ✅\n")
 
