@@ -8,9 +8,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        print("=" * 70)
-        print("=== INITIALER REFERENZLAUF (setUpClass) ===")
-        print("=" * 70 + "\n")
+        #print("=" * 70)
+        #print("=== INITIALER REFERENZLAUF (setUpClass) ===")
+        #print("=" * 70 + "\n")
 
         df = load_data("advertising.csv")
         train_model(df)
