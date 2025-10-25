@@ -38,7 +38,8 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 70 + "\n")
 
         # Aktueller Lauf
-        df = load_data("advertising.csv")
+        print(" hier sieht die rheifolgen, ab ....fängt das runtime")
+		df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
 
