@@ -49,21 +49,19 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 70 + "\n")
 
-        # Erneuter Trainingslauf (aktueller Testlauf)
+        # Aktueller Trainingslauf
         df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
 
-        # Referenzzeit aus setUpClass()
+        # Referenz aus setUpClass()
         ref = self.ref_time or 0.0
         if ref == 0.0:
             print("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.\n")
 
         limit = ref * 1.2 if ref > 0 else float("inf")
 
-        # ------------------------
-        # Laufzeitanalyse
-        # ------------------------
+        # Laufzeitanalyse (für Prüferausgabe)
         print("Laufzeitanalyse:")
         print("  (Referenzzeit = aus setUpClass())")
         print(f" - Referenzlaufzeit: {ref:.4f} sec")
@@ -71,21 +69,20 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
-        # Visuelle Bewertung für den Prüfer
+        # Prüfen mit kompakter Fehlerbeschreibung
         if runtime > limit:
             print(f"⚠️  Aktuelle Laufzeit ({runtime:.4f} sec) überschreitet das erlaubte Limit ({limit:.4f} sec)!\n")
             print("❌ Laufzeit überschreitet das Limit!\n")
             print("Ergebnis: TESTFALL 2 FAILED ❌\n")
-
-            # Fehlererklärung direkt im AssertionError
             self.fail(
-                f"Trainingslaufzeit zu hoch: {runtime:.4f}s > erlaubtes Limit {limit:.4f}s "
-                f"(Referenz: {ref:.4f}s, 120%-Grenze überschritten)"
+                f"Trainingslaufzeit zu hoch: {runtime:.4f}s (Limit: {limit:.4f}s, Referenz: {ref:.4f}s) – "
+                f"{runtime - limit:.4f}s über Limit."
             )
         else:
             print(f"✅  Aktuelle Laufzeit ({runtime:.4f} sec) liegt unter dem Limit ({limit:.4f} sec).\n")
             print("Laufzeit liegt innerhalb der Toleranz.\n")
             print("Ergebnis: TESTFALL 2 PASSED ✅\n")
+
 
 
 if __name__ == "__main__":
