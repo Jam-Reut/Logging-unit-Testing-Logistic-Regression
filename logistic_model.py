@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # ==============================================================
-# Logger-Konfiguration
+# Logger-Konfiguration (Ori Cohen Style)
 # ==============================================================
 logging.basicConfig(
     level=logging.INFO,
@@ -15,61 +15,60 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Globale Laufzeitmessung
 _last_timings = {}
 
-
 # ==============================================================
-# Timer-Dekorator nach Ori Cohen
+# Dekorator 1: my_logger – Verantwortlich für Funktionsverfolgung
 # ==============================================================
-def my_timer(func):
-    """Misst Ausführungszeit einer Funktion und speichert sie in _last_timings."""
-    def timed(*args, **kwargs):
-        start = time.time()
+def my_logger(func):
+    """Protokolliert Start, Lauf und erfolgreichen Abschluss einer Funktion."""
+    def wrapper(*args, **kwargs):
         logger.info(f"Started '{func.__name__}'")
         logger.info(f"Running '{func.__name__}' ...")
         result = func(*args, **kwargs)
-        end = time.time()
-        elapsed = end - start
-        _last_timings[func.__name__] = elapsed
-        logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
         logger.info(f"Completed '{func.__name__}' successfully.")
         return result
-    timed.__name__ = func.__name__  # Name bleibt gleich
-    return timed
-
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 # ==============================================================
-# Daten laden
+# Dekorator 2: my_timer – Misst und speichert Ausführungszeit
 # ==============================================================
+def my_timer(func):
+    """Misst die Ausführungszeit einer Funktion und speichert sie in _last_timings."""
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        _last_timings[func.__name__] = elapsed
+        logger.info(f"'{func.__name__}' executed in {elapsed:.4f} sec")
+        return result
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+# ==============================================================
+# Funktionsdefinitionen mit beiden Dekoratoren (Ori Cohen Prinzip)
+# ==============================================================
+@my_logger
 @my_timer
 def load_data(path="advertising.csv"):
     df = pd.read_csv(path)
     return df
 
-
-# ==============================================================
-# Modelltraining
-# ==============================================================
+@my_logger
 @my_timer
 def train_model(df):
     X = df[["Daily Time Spent on Site", "Age", "Area Income",
             "Daily Internet Usage", "Male"]]
     y = df["Clicked on Ad"]
-
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, random_state=42
     )
-
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
-
     return model, X_test, y_test
 
-
-# ==============================================================
-# Modellauswertung
-# ==============================================================
+@my_logger
 @my_timer
 def evaluate_model(model, X_test, y_test):
     y_pred = model.predict(X_test)
@@ -84,17 +83,15 @@ def evaluate_model(model, X_test, y_test):
         f"Klassifikationsbericht (Auszug):\n{report}\n"
         f"Final Accuracy: {acc:.2f}\n"
     )
-
     print(metrics_text)
     return acc, metrics_text
 
-
 # ==============================================================
-# Letztes Timing abrufen
+# Timing-Abfrage
 # ==============================================================
 def get_last_timing(func_name: str):
+    """Gibt die zuletzt gemessene Laufzeit einer Funktion zurück."""
     return _last_timings.get(func_name)
-
 
 # ==============================================================
 # Direkter Start
