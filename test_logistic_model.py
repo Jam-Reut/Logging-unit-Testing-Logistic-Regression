@@ -8,10 +8,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        #print("=" * 70)
-        #print("=== INITIALER REFERENZLAUF (setUpClass) ===")
-        #print("=" * 70 + "\n")
-
+	
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
@@ -19,19 +16,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         if cls.ref_time is None:
             logging.warning("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.")
             cls.ref_time = 0.0
-
-        #print("\n💬 Hinweis:")
-        #print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
-        #print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
-        #print("ab '.2025-…' beginnt Testfall 2 (train_runtime).\n")
-
     # ------------------------------------------------
     # TESTFALL 1 – Vorhersageprüfung
     # ------------------------------------------------
     def test_1_predict(self):
         print("=" * 70)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
-        print("=" * 70 + "\n")
+        print("=" * 70)
 
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
@@ -70,11 +61,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         if passed:
             print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
-            print("Ergebnis: TESTFALL 2 PASSED ✅\n")
+            #print("Ergebnis: TESTFALL 2 PASSED ✅\n")
             print ("Logeinträge zeigen die Abläufe beider Testfälle 1 und 2. Ab „.2025-… beginnt fit():")
         else:
             print("❌ Laufzeit überschreitet das Limit!\n")
-            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            #print("Ergebnis: TESTFALL 2 FAILED ❌\n")
             print ("Logeinträge zeigen die Abläufe beider Testfälle 1 und 2. Ab „.2025-… beginnt fit() : ")
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
