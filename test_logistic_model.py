@@ -38,7 +38,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=" * 70 + "\n")
 
         # Aktueller Lauf
-        print(" hier sieht die rheifolgen, ab ....fängt das runtime")
         df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
@@ -68,6 +67,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
             print(f"✅  Aktuelle Laufzeit ({runtime:.4f} sec) liegt unter dem Limit ({limit:.4f} sec).\n")
             #print("Laufzeit liegt innerhalb der Toleranz.\n")
             print("Ergebnis: TESTFALL 2 PASSED ✅\n")
+			print ("rheinfolge")
 
 
 if __name__ == "__main__":
