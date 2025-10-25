@@ -97,7 +97,7 @@ def get_last_timing(func_name: str):
 # Direkter Start
 # ==============================================================
 if __name__ == "__main__":
-    print("=== Starte logistic_model.py ===\n")
+    #print("=== Starte logistic_model.py ===\n")
     df = load_data("advertising.csv")
     model, X_test, y_test = train_model(df)
     evaluate_model(model, X_test, y_test)
