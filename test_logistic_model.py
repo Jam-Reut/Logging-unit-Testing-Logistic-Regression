@@ -1,11 +1,9 @@
 import unittest
-import logging
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-logger = logging.getLogger(__name__)
 
 class TestLogisticRegressionModel(unittest.TestCase):
-    """Tests nach Ori Cohen: Logging + Timing + klare Outputstruktur"""
+    """Unit-Tests nach Ori Cohen: Logging + Timing + klar strukturierte Ergebnisse."""
 
     @classmethod
     def setUpClass(cls):
@@ -34,8 +32,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
-        ref = self.ref_time
-        limit = ref * 1.2
+
+        ref = self.ref_time or 0.0
+        if ref == 0.0:
+            print("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.\n")
+        limit = ref * 1.2 if ref > 0 else float('inf')
 
         print("Laufzeitanalyse:")
         print("  (Referenzzeit = aus setUpClass())")

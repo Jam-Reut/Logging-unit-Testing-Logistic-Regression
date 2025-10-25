@@ -1,10 +1,13 @@
 """
 logistic_model.py
 
-Implementierung nach Ori Cohen (2019) – Unit Testing & Logging for Data Science
-- Einheitlicher Logger
-- @my_logger und @my_timer für transparente, wiederverwendbare Prozesslogik
-- Trennung von Logging (technisch) und Testergebnissen (print)
+Implementierung basierend auf Ori Cohen (2019):
+"Unit Testing and Logging for Data Science" – Medium.
+
+Ziele:
+- saubere Trennung von Logging (technisch) und Testing (Ergebnis)
+- strukturierte Messung und Protokollierung von Laufzeiten
+- keine "Hack-Lösungen", alles nachvollziehbar über Dekoratoren
 """
 
 import logging
@@ -41,7 +44,7 @@ def my_logger(func):
 
 
 def my_timer(func):
-    """Misst Laufzeit einer Funktion und speichert sie."""
+    """Misst Laufzeit einer Funktion und speichert sie als Attribut."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -54,10 +57,15 @@ def my_timer(func):
 
 
 def get_last_timing(func_name: str):
-    """Gibt die zuletzt gemessene Laufzeit einer dekorierten Funktion zurück."""
+    """
+    Gibt die zuletzt gemessene Laufzeit einer mit @my_timer dekorierten Funktion zurück.
+    Erkennt auch mehrfach verschachtelte Dekoratoren.
+    """
     func = globals().get(func_name)
-    if hasattr(func, "last_timing"):
-        return func.last_timing
+    while func:
+        if hasattr(func, "last_timing"):
+            return func.last_timing
+        func = getattr(func, "__wrapped__", None)
     return None
 
 
