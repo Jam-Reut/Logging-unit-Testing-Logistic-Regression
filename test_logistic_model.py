@@ -8,6 +8,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Referenzlauf für Laufzeitmessung."""
+        #print("=== Starte Unit-Tests ===\n")
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
@@ -20,12 +21,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("TESTFALL 1: predict(): Vorhersagefunktion")
         print("=" * 70 + "\n")
 
-        print("[TEST 1 LOGGING]")  # Marker zur Trennung der Loggerausgaben
-
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         acc, _ = evaluate_model(model, X_test, y_test)
 
+        # Nur prüfen, keine doppelte Ausgabe
         self.assertGreaterEqual(acc, 0.9)
         print("Ergebnis: TESTFALL 1 PASSED ✅\n")
 
@@ -37,8 +37,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 70 + "\n")
 
-        print("[TEST 2 LOGGING]")  # Marker zur Trennung der Loggerausgaben
-
+        # Aktueller Lauf
         df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
