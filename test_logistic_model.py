@@ -22,10 +22,10 @@ class TestLogisticRegressionModel(unittest.TestCase):
             logging.warning("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.")
             cls.ref_time = 0.0
 
-        print("\n💬 Hinweis:")
-        print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
-        print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
-        print("ab '.2025-…' beginnt Testfall 2 (train_runtime).\n")
+        #print("\n💬 Hinweis:")
+        #print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
+        #print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
+        #print("ab '.2025-…' beginnt Testfall 2 (train_runtime).\n")
 
     # ------------------------------------------------
     # TESTFALL 1 – Vorhersageprüfung
@@ -56,37 +56,26 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         ref = self.ref_time or 0.0
         limit = ref * 1.2 if ref > 0 else float("inf")
-
-        # Auswertung & Assertion werden NACH den Logeinträgen ausgegeben
         passed = runtime <= limit
 
+        # --- Alle Logeinträge sicher abschließen, bevor Analyse ausgegeben wird ---
+        for handler in logging.getLogger().handlers:
+            handler.flush()
+
+        # --- Analyse und Bewertung werden erst nach Logging ausgegeben ---
+        print("\nLaufzeitanalyse:")
+        print("  (Referenzzeit = aus setUpClass())")
+        print(f" - Referenzlaufzeit: {ref:.4f} sec")
+        print("  (Aktuelle Laufzeit = aktueller Testlauf)")
+        print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
+        print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
+
         if passed:
-            analysis_text = (
-                "\nLaufzeitanalyse:\n"
-                "  (Referenzzeit = aus setUpClass())\n"
-                f" - Referenzlaufzeit: {ref:.4f} sec\n"
-                "  (Aktuelle Laufzeit = aktueller Testlauf)\n"
-                f" - Aktuelle Laufzeit: {runtime:.4f} sec\n"
-                f" - Erlaubtes Limit (120%): {limit:.4f} sec\n\n"
-                "✅ Laufzeit liegt innerhalb der Toleranz.\n\n"
-                "Ergebnis: TESTFALL 2 PASSED ✅\n"
-            )
+            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
+            print("Ergebnis: TESTFALL 2 PASSED ✅\n")
         else:
-            analysis_text = (
-                "\nLaufzeitanalyse:\n"
-                "  (Referenzzeit = aus setUpClass())\n"
-                f" - Referenzlaufzeit: {ref:.4f} sec\n"
-                "  (Aktuelle Laufzeit = aktueller Testlauf)\n"
-                f" - Aktuelle Laufzeit: {runtime:.4f} sec\n"
-                f" - Erlaubtes Limit (120%): {limit:.4f} sec\n\n"
-                "❌ Laufzeit überschreitet das Limit!\n\n"
-                "Ergebnis: TESTFALL 2 FAILED ❌\n"
-            )
-
-        # Analyse nach Log-Ausgaben anzeigen
-        print(analysis_text)
-
-        if not passed:
+            print("❌ Laufzeit überschreitet das Limit!\n")
+            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
                 f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
