@@ -8,7 +8,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Referenzlauf für Laufzeitmessung."""
-        #print("=== Starte Unit-Tests ===\n")
+        print("\n" + "=" * 70)
+        print("=== INITIALER REFERENZLAUF (setUpClass) ===")
+        print("=" * 70 + "\n")
+
+        # Hinweis zu den Log-Einträgen
+        print("💬 Hinweis:")
+        print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
+        print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
+        print("ab '.2025-…' beginnt Testfall 2 (train_runtime).\n")
+
+        # Referenzlauf durchführen
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
@@ -25,7 +35,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
         model, X_test, y_test = train_model(df)
         acc, _ = evaluate_model(model, X_test, y_test)
 
-        # Nur prüfen, keine doppelte Ausgabe
         self.assertGreaterEqual(acc, 0.9)
         print("Ergebnis: TESTFALL 1 PASSED ✅\n")
 
@@ -65,7 +74,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
             )
         else:
             print(f"✅  Aktuelle Laufzeit ({runtime:.4f} sec) liegt unter dem Limit ({limit:.4f} sec).\n")
-            print("Laufzeit liegt innerhalb der Toleranz.\n")
             print("Ergebnis: TESTFALL 2 PASSED ✅\n")
 
 
