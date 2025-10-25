@@ -58,29 +58,29 @@ class TestLogisticRegressionModel(unittest.TestCase):
         limit = ref * 1.2 if ref > 0 else float("inf")
         passed = runtime <= limit
 
-        # --- Alle Logeinträge sicher abschließen, bevor Analyse ausgegeben wird ---
-        for handler in logging.getLogger().handlers:
-            handler.flush()
+        # --- Analyse und Bewertung jetzt über Logger statt print ---
+        logger = logging.getLogger()
 
-        # --- Analyse und Bewertung werden erst nach Logging ausgegeben ---
-        print("\nLaufzeitanalyse:")
-        print("  (Referenzzeit = aus setUpClass())")
-        print(f" - Referenzlaufzeit: {ref:.4f} sec")
-        print("  (Aktuelle Laufzeit = aktueller Testlauf)")
-        print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
-        print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
+        logger.info("")
+        logger.info("=== Laufzeitanalyse ===")
+        logger.info("  (Referenzzeit = aus setUpClass())")
+        logger.info(f" - Referenzlaufzeit: {ref:.4f} sec")
+        logger.info("  (Aktuelle Laufzeit = aktueller Testlauf)")
+        logger.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
+        logger.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec")
 
         if passed:
-            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
-            print("Ergebnis: TESTFALL 2 PASSED ✅\n")
+            logger.info("✅ Laufzeit liegt innerhalb der Toleranz.")
+            logger.info("Ergebnis: TESTFALL 2 PASSED ✅\n")
         else:
-            print("❌ Laufzeit überschreitet das Limit!\n")
-            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            logger.error("❌ Laufzeit überschreitet das Limit!")
+            logger.error("Ergebnis: TESTFALL 2 FAILED ❌\n")
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
                 f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
                 f"Überschreitung: +{runtime - limit:.4f}s."
             )
+
 
 
 if __name__ == "__main__":
