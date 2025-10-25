@@ -8,7 +8,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Referenzlauf für Laufzeitmessung."""
-        print("=== Starte Unit-Tests ===\n")
+        #print("=== Starte Unit-Tests ===\n")
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
