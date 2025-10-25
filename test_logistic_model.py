@@ -53,7 +53,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         # 🔹 Laufzeitanalyse als normale Print-Ausgabe ohne Zeitstempel
         print("\nLaufzeitanalyse:")
-        print("  (Referenzzeit = aus setUpClass())")
+        #print("  (Referenzzeit = aus setUpClass())")
         print(f" - Referenzlaufzeit: {ref:.4f} sec")
         print("  (Aktuelle Laufzeit = aktueller Testlauf)")
         print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
