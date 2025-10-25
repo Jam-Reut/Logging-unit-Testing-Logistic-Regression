@@ -1,23 +1,21 @@
 import unittest
 import logging
+import sys
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
-# ------------------------------------------------------------
-# Unit-Testklasse
-# ------------------------------------------------------------
+
 class TestLogisticRegressionModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        #print("=" * 70)
-        #print("=== INITIALER REFERENZLAUF (setUpClass) ===")
-        #print("=" * 70 + "\n")
+        print("=" * 70)
+        print("=== INITIALER REFERENZLAUF (setUpClass) ===")
+        print("=" * 70 + "\n")
 
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
 
-        # Schutz gegen NoneType (robuste Testinitialisierung)
         if cls.ref_time is None:
             logging.warning("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.")
             cls.ref_time = 0.0
@@ -45,7 +43,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     # TESTFALL 2 – Laufzeitprüfung
     # ------------------------------------------------
-     def test_2_train_runtime(self):
+    def test_2_train_runtime(self):
         print("=" * 70)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 70 + "\n")
@@ -58,11 +56,11 @@ class TestLogisticRegressionModel(unittest.TestCase):
         limit = ref * 1.2 if ref > 0 else float("inf")
         passed = runtime <= limit
 
-        # 🔹 Hier: Logging-Ausgaben vollständig schreiben, bevor print folgt
-        import sys
+        # 🔹 Stellt sicher, dass Logging (stderr) vollständig ausgegeben ist,
+        #    bevor die print-Ausgabe folgt
         sys.stderr.flush()
 
-        # 🔹 Jetzt normale Print-Ausgabe für Analyse, sauber und ohne Zeitstempel
+        # 🔹 Laufzeitanalyse als normale Print-Ausgabe ohne Zeitstempel
         print("\nLaufzeitanalyse:")
         print("  (Referenzzeit = aus setUpClass())")
         print(f" - Referenzlaufzeit: {ref:.4f} sec")
@@ -81,7 +79,6 @@ class TestLogisticRegressionModel(unittest.TestCase):
                 f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
                 f"Überschreitung: +{runtime - limit:.4f}s."
             )
-
 
 
 if __name__ == "__main__":
