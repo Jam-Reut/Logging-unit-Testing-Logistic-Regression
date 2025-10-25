@@ -1,11 +1,10 @@
 """
 logistic_model.py
 
-Implementierung einer ML-Pipeline mit Logging und Zeitmessung
-nach den Prinzipien von Ori Cohen (2019):
-- Einheitliches Logging mit dem logging-Modul
-- Nutzung von @my_logger und @my_timer Dekoratoren
-- Keine Vermischung von Logging und Testergebnissen
+Implementierung nach Ori Cohen (2019) – Unit Testing & Logging for Data Science
+- Einheitlicher Logger
+- @my_logger und @my_timer für transparente, wiederverwendbare Prozesslogik
+- Trennung von Logging (technisch) und Testergebnissen (print)
 """
 
 import logging
@@ -17,7 +16,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # ================================================================
-# EINHEITLICHER LOGGER (Ori Cohen Prinzip)
+# EINHEITLICHER LOGGER
 # ================================================================
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +29,7 @@ logger = logging.getLogger(__name__)
 # DEKORATOREN
 # ================================================================
 def my_logger(func):
-    """Protokolliert Start und Ende der Funktion."""
+    """Loggt Start und Ende einer Funktion."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         logger.info(f"Started '{func.__name__}'")
@@ -42,7 +41,7 @@ def my_logger(func):
 
 
 def my_timer(func):
-    """Misst Laufzeit der Funktion und speichert sie im Funktionsobjekt."""
+    """Misst Laufzeit einer Funktion und speichert sie."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -55,9 +54,7 @@ def my_timer(func):
 
 
 def get_last_timing(func_name: str):
-    """
-    Gibt die zuletzt gemessene Laufzeit einer mit @my_timer dekorierten Funktion zurück.
-    """
+    """Gibt die zuletzt gemessene Laufzeit einer dekorierten Funktion zurück."""
     func = globals().get(func_name)
     if hasattr(func, "last_timing"):
         return func.last_timing
@@ -65,12 +62,11 @@ def get_last_timing(func_name: str):
 
 
 # ================================================================
-# PIPELINE-FUNKTIONEN
+# PIPELINE
 # ================================================================
 @my_logger
 @my_timer
 def load_data(csv_path: str):
-    """Lädt die Daten aus einer CSV-Datei."""
     df = pd.read_csv(csv_path)
     return df
 
@@ -78,7 +74,6 @@ def load_data(csv_path: str):
 @my_logger
 @my_timer
 def train_model(df: pd.DataFrame):
-    """Trainiert das Logistische Regressionsmodell."""
     X = df[["Daily Time Spent on Site", "Age", "Area Income",
             "Daily Internet Usage", "Male"]]
     y = df["Clicked on Ad"]
@@ -99,27 +94,24 @@ def evaluate_model(model, X_test, y_test):
     cm = confusion_matrix(y_test, y_pred)
     cr = classification_report(y_test, y_pred)
 
-    metrics_text = (
+    print(
         f"\nGenauigkeit (Accuracy): {acc:.2f}\n"
         f"Confusion Matrix:\n{cm}\n\n"
         f"Klassifikationsbericht (Auszug):\n{cr}\n"
         f"Final Accuracy: {acc:.2f}\n"
     )
 
-    # Ori Cohen: technische Logs in logger, fachliche Ausgaben via print()
-    print(metrics_text)
-    return acc, metrics_text
+    return acc  # Nur float zurückgeben
 
 
 # ================================================================
-# MANUELLER START (wird nur bei direktem Aufruf ausgeführt)
+# MANUELLER START
 # ================================================================
 if __name__ == "__main__":
     print("=== Starte logistic_model.py ===\n")
-    # Nur ein Beispiel-Durchlauf, keine Tests
     try:
         df = load_data("advertising.csv")
         model, X_test, y_test = train_model(df)
         evaluate_model(model, X_test, y_test)
     except FileNotFoundError:
-        print("⚠️  Datei 'advertising.csv' nicht gefunden. Bitte sicherstellen, dass sie im selben Verzeichnis liegt.")
+        print("⚠️ Datei 'advertising.csv' nicht gefunden.")

@@ -4,9 +4,8 @@ from logistic_model import load_data, train_model, evaluate_model, get_last_timi
 
 logger = logging.getLogger(__name__)
 
-
 class TestLogisticRegressionModel(unittest.TestCase):
-    """Unit Tests im Stil von Ori Cohen – Logging & Evaluation strikt getrennt."""
+    """Tests nach Ori Cohen: Logging + Timing + klare Outputstruktur"""
 
     @classmethod
     def setUpClass(cls):
@@ -25,7 +24,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
         acc = evaluate_model(model, X_test, y_test)
 
         self.assertGreaterEqual(acc, 0.9)
-        print("Ergebnis: TESTFALL 1 PASSED ✅\n")
+        print("\nErgebnis: TESTFALL 1 PASSED ✅\n")
 
     def test_2_train_runtime(self):
         print("=" * 70)
@@ -35,14 +34,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         df = load_data("advertising.csv")
         train_model(df)
         runtime = get_last_timing("train_model")
-
         ref = self.ref_time
         limit = ref * 1.2
 
         print("Laufzeitanalyse:")
-        print("  (Referenzzeit = Basislaufzeit aus setUpClass())")
+        print("  (Referenzzeit = aus setUpClass())")
         print(f" - Referenzlaufzeit: {ref:.4f} sec")
-        print("  (Aktuelle Laufzeit = dieser Testdurchlauf)")
+        print("  (Aktuelle Laufzeit = aktueller Testlauf)")
         print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
