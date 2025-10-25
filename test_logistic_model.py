@@ -45,7 +45,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------
     # TESTFALL 2 – Laufzeitprüfung
     # ------------------------------------------------
-    def test_2_train_runtime(self):
+     def test_2_train_runtime(self):
         print("=" * 70)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 70 + "\n")
@@ -58,23 +58,24 @@ class TestLogisticRegressionModel(unittest.TestCase):
         limit = ref * 1.2 if ref > 0 else float("inf")
         passed = runtime <= limit
 
-        # --- Analyse und Bewertung jetzt über Logger statt print ---
-        logger = logging.getLogger()
+        # 🔹 Hier: Logging-Ausgaben vollständig schreiben, bevor print folgt
+        import sys
+        sys.stderr.flush()
 
-        logger.info("")
-        logger.info("=== Laufzeitanalyse ===")
-        logger.info("  (Referenzzeit = aus setUpClass())")
-        logger.info(f" - Referenzlaufzeit: {ref:.4f} sec")
-        logger.info("  (Aktuelle Laufzeit = aktueller Testlauf)")
-        logger.info(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
-        logger.info(f" - Erlaubtes Limit (120%): {limit:.4f} sec")
+        # 🔹 Jetzt normale Print-Ausgabe für Analyse, sauber und ohne Zeitstempel
+        print("\nLaufzeitanalyse:")
+        print("  (Referenzzeit = aus setUpClass())")
+        print(f" - Referenzlaufzeit: {ref:.4f} sec")
+        print("  (Aktuelle Laufzeit = aktueller Testlauf)")
+        print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
+        print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
         if passed:
-            logger.info("✅ Laufzeit liegt innerhalb der Toleranz.")
-            logger.info("Ergebnis: TESTFALL 2 PASSED ✅\n")
+            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
+            print("Ergebnis: TESTFALL 2 PASSED ✅\n")
         else:
-            logger.error("❌ Laufzeit überschreitet das Limit!")
-            logger.error("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            print("❌ Laufzeit überschreitet das Limit!\n")
+            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
                 f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
