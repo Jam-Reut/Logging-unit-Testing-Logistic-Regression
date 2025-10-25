@@ -1,79 +1,92 @@
 import unittest
-import logging
-import sys
+import time
 from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 
 class TestLogisticRegressionModel(unittest.TestCase):
+    """Unit-Tests für Logistic Regression Modell nach Ori Kohen-Prinzipien."""
 
     @classmethod
     def setUpClass(cls):
-	
-        df = load_data("advertising.csv")
+        """Initiale Referenzlaufzeit für Trainingsfunktion bestimmen."""
+        print("\n" + "=" * 70)
+        print("=== INITIALER REFERENZLAUF (setUpClass) ===")
+        print("=" * 70 + "\n")
+
+        df = load_data()
+        start = time.perf_counter()
         train_model(df)
-        cls.ref_time = get_last_timing("train_model")
+        cls.reference_time = time.perf_counter() - start
 
-        if cls.ref_time is None:
-            logging.warning("⚠️  WARNUNG: Referenzlaufzeit konnte nicht ermittelt werden.")
-            cls.ref_time = 0.0
-    # ------------------------------------------------
-    # TESTFALL 1 – Vorhersageprüfung
-    # ------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_1_predict(self):
-        print("=" * 70)
+        """TESTFALL 1: Prüft Modellvorhersage (Accuracy, Confusion Matrix, Report)."""
+        print("\n" + "=" * 70)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
-        print("=" * 70)
+        print("=" * 70 + "\n")
 
-        df = load_data("advertising.csv")
-        model, X_test, y_test = train_model(df)
-        acc, metrics_text = evaluate_model(model, X_test, y_test)
+        # --- Modelldurchlauf ---
+        df = load_data()
+        model = train_model(df)
+        acc, cm, report = evaluate_model(model)
 
-        print(f"\nErgebnis: TESTFALL 1 PASSED ✅\n")
-        self.assertGreaterEqual(acc, 0.9)
+        # --- Prüferfreundliche Ausgabe ---
+        print(f"Genauigkeit (Accuracy): {acc:.2f}")
+        print("Confusion Matrix:")
+        print(cm)
+        print("\nKlassifikationsbericht (Auszug):")
+        print(report)
+        print(f"Final Accuracy: {acc:.2f}\n")
 
-    # ------------------------------------------------
-    # TESTFALL 2 – Laufzeitprüfung
-    # ------------------------------------------------
+        # --- Bewertung ---
+        self.assertGreaterEqual(acc, 0.9, "❌ Accuracy unter akzeptabler Grenze (0.9).")
+        print("Ergebnis: TESTFALL 1 PASSED ✅")
+
+    # --------------------------------------------------------------------------
     def test_2_train_runtime(self):
-        print("=" * 70)
+        """TESTFALL 2: Prüft Laufzeit der Trainingsfunktion."""
+        print("\n" + "=" * 70)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
         print("=" * 70 + "\n")
 
-        df = load_data("advertising.csv")
+        # --- Laufzeitmessung ---
+        df = load_data()
+        start = time.perf_counter()
         train_model(df)
-        runtime = get_last_timing("train_model")
+        runtime = time.perf_counter() - start
+        ref = self.reference_time
+        limit = ref * 1.2
 
-        ref = self.ref_time or 0.0
-        limit = ref * 1.2 if ref > 0 else float("inf")
-        passed = runtime <= limit
+        # --- Logische Ausgabe ---
+        print("\n💬 Hinweis:")
+        print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
+        print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
+        print("ab '.2025-…' beginnt Testfall 2 (fit / train_runtime).\n")
 
-        # 🔹 Stellt sicher, dass Logging (stderr) vollständig ausgegeben ist,
-        #    bevor die print-Ausgabe folgt
-        sys.stderr.flush()
+        # --- Logging wird automatisch durch Decorator angezeigt ---
+        # Hier folgt kein zusätzlicher Logger-Aufruf, um Ori Kohen Prinzip zu wahren
 
-        # 🔹 Laufzeitanalyse als normale Print-Ausgabe ohne Zeitstempel
+        # --- Nachlaufende Analyse ---
         print("\nLaufzeitanalyse:")
-        #print("  (Referenzzeit = aus setUpClass())")
         print(f" - Referenzlaufzeit: {ref:.4f} sec")
-        print("  (Aktuelle Laufzeit = aktueller Testlauf)")
         print(f" - Aktuelle Laufzeit: {runtime:.4f} sec")
         print(f" - Erlaubtes Limit (120%): {limit:.4f} sec\n")
 
-        if passed:
-            print("✅ Laufzeit liegt innerhalb der Toleranz.\n")
-            #print("Ergebnis: TESTFALL 2 PASSED ✅\n")
-            print ("Logeinträge zeigen die Abläufe beider Testfälle 1 und 2. Ab „.2025-… beginnt fit():")
-        else:
+        # --- Bewertung ---
+        if runtime > limit:
             print("❌ Laufzeit überschreitet das Limit!\n")
-            #print("Ergebnis: TESTFALL 2 FAILED ❌\n")
-            print ("Logeinträge zeigen die Abläufe beider Testfälle 1 und 2. Ab „.2025-… beginnt fit() : ")
+            print("Ergebnis: TESTFALL 2 FAILED ❌\n")
+            diff = runtime - limit
             self.fail(
                 f"❌ Trainingslaufzeit überschreitet das erlaubte Limit: "
-                f"Aktuell {runtime:.4f}s > {limit:.4f}s (Referenz: {ref:.4f}s). "
-                f"Überschreitung: +{runtime - limit:.4f}s."
+                f"Aktuell {runtime:.4f}s > {limit:.4f}s "
+                f"(Referenz: {ref:.4f}s). Überschreitung: +{diff:.4f}s."
             )
+        else:
+            print("Ergebnis: TESTFALL 2 PASSED ✅")
 
 
+# --------------------------------------------------------------------------
 if __name__ == "__main__":
-    print("=== Starte Unit-Tests ===")
-    unittest.main(argv=[""], exit=False)
+    print("\n=== Starte Unit-Tests ===")
+    unittest.main(verbosity=2)
