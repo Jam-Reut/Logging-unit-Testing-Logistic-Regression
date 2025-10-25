@@ -12,13 +12,13 @@ class TestLogisticRegressionModel(unittest.TestCase):
         print("=== INITIALER REFERENZLAUF (setUpClass) ===")
         print("=" * 70 + "\n")
 
-        # Hinweis zu den Log-Einträgen
+        # 💬 Hinweis direkt vor dem ersten Logging-Block
         print("💬 Hinweis:")
         print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
         print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
         print("ab '.2025-…' beginnt Testfall 2 (train_runtime).\n")
 
-        # Referenzlauf durchführen
+        # Jetzt startet das Logging unmittelbar danach
         df = load_data("advertising.csv")
         train_model(df)
         cls.ref_time = get_last_timing("train_model")
