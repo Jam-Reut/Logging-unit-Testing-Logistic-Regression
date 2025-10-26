@@ -51,7 +51,7 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
         status = "PASS" if runtime <= limit else "FAIL"
         logger.info(
-            f"[TIMING] Aktuelle Laufzeit ={runtime:.4f}s | Erlaubtes Limit(120%)={limit:.4f}s | Referenz={self.reference_time:.4f}s | status={status}"
+            f"[TIMING] Aktuelle Laufzeit ={runtime:.4f}s | Limit(120%)={limit:.4f}s | Referenz={self.reference_time:.4f}s | status={status}"
         )
 
         if runtime > limit:
