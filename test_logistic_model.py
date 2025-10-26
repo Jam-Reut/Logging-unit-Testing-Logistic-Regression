@@ -1,6 +1,6 @@
 import unittest
 import time
-from logistic_model import load_data, train_model, evaluate_model
+from logistic_model import load_data, train_model, evaluate_model, get_last_timing
 
 
 class TestLogisticRegressionModel(unittest.TestCase):
@@ -9,21 +9,20 @@ class TestLogisticRegressionModel(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Initiale Referenzlaufzeit (Baseline)."""
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("=== INITIALER REFERENZLAUF (setUpClass) ===")
-        print("="*70 + "\n")
+        print("=" * 70 + "\n")
 
         df = load_data()
-        start = time.perf_counter()
         train_model(df)
-        cls.reference_time = time.perf_counter() - start
+        cls.reference_time = get_last_timing('train_model')
 
     # ------------------------------------------------------------------
     def test_1_predict(self):
         """TESTFALL 1: Vorhersagequalität prüfen."""
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("TESTFALL 1: predict(): Vorhersagefunktion")
-        print("="*70 + "\n")
+        print("=" * 70 + "\n")
 
         df = load_data()
         model = train_model(df)
@@ -42,19 +41,17 @@ class TestLogisticRegressionModel(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_2_train_runtime(self):
         """TESTFALL 2: Laufzeit der Trainingsfunktion prüfen."""
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("TESTFALL 2: fit(): Laufzeit der Trainingsfunktion")
-        print("="*70 + "\n")
+        print("=" * 70 + "\n")
 
-        print("💬 Hinweis:")
-        print("Die folgenden Logeinträge zeigen die Abläufe beider Testfälle.")
+        print("💬 Hinweis: Logeinträge zeigen die Abläufe beider Testfälle.")
         print("Alles vor dem Punkt ('.') gehört zu Testfall 1 (predict),")
         print("ab '.2025-…' beginnt Testfall 2 (fit/train_runtime).\n")
 
         df = load_data()
-        start = time.perf_counter()
         train_model(df)
-        runtime = time.perf_counter() - start
+        runtime = get_last_timing('train_model')  # <-- direkt aus Decorator
         limit = self.reference_time * 1.2
 
         print("\nLaufzeitanalyse:")
