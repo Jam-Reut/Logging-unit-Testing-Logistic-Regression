@@ -97,7 +97,7 @@ def evaluate_model(model):
 # MAIN (optional)
 # ============================================================================
 if __name__ == "__main__":
-    print("\n=== Starte logistic_model.py ===\n")
+    #print("\n=== Starte logistic_model.py ===\n")
     df = load_data()
     model = train_model(df)
     acc, cm, report = evaluate_model(model)
