@@ -10,9 +10,9 @@ class TestLogisticRegressionModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        print("\n" + "=" * 70)
-        print("=== INITIALER REFERENZLAUF (setUpClass) ===")
-        print("=" * 70 + "\n")
+        #print("\n" + "=" * 70)
+        #print("=== INITIALER REFERENZLAUF (setUpClass) ===")
+        #print("=" * 70 + "\n")
 
         df = load_data()
         train_model(df)
