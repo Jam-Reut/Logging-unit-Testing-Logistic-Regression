@@ -53,9 +53,8 @@ Prüft:
 
 Beispielausgabe:
 
-<img width="1645" height="849" alt="thumbnail_image" src="https://github.com/user-attachments/assets/4569880d-4ab0-46ab-9476-268acb54b6cb" />
 
-
+<img width="1037" height="515" alt="grafik" src="https://github.com/user-attachments/assets/6f1f39d4-9d4f-43f2-8e05-007dfb0b6065" />
 
 Logging & Testergebnisse:
 
