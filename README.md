@@ -53,13 +53,8 @@ Prüft:
 
 Beispielausgabe:
 
-Laufzeit-Analyse:
-- Referenzlaufzeit: 0.3000 sec
-- Aktuelle Laufzeit: 0.2903 sec
-- Erlaubtes Limit (120 %): 0.3600 sec
+<img width="1645" height="849" alt="thumbnail_image" src="https://github.com/user-attachments/assets/4569880d-4ab0-46ab-9476-268acb54b6cb" />
 
-  Laufzeit liegt innerhalb der Toleranz.
-Ergebnis: TESTFALL 2 PASSED
 
 
 Logging & Testergebnisse:
