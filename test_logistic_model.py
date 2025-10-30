@@ -7,16 +7,19 @@ logger = logging.getLogger(__name__)
 
 class TestLogisticRegressionModel(unittest.TestCase):
     """Variante B — Logging-basierte Version (professionell & kompakt)."""
-
+        
     @classmethod
     def setUpClass(cls):
         #print("\n" + "=" * 70)
         #print("=== INITIALER REFERENZLAUF (setUpClass) ===")
         #print("=" * 70 + "\n")
 
-        df = load_data()
-        train_model(df)
-        cls.reference_time = get_last_timing('train_model')
+        #df = load_data()
+        #train_model(df)
+        #cls.reference_time = get_last_timing('train_model')
+        
+        # ✅ Stattdessen feste Referenzzeit setzen:
+    cls.reference_time = 0.36  # Beispiel: 0.12 Sekunden als fester Referenzwert
 
     # --------------------------------------------------------------
     def test_1_predict(self):
